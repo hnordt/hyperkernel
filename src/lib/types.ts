@@ -54,14 +54,26 @@ export type HKObjectAttribute =
       type: "boolean";
       label: string;
       required?: boolean;
+    }
+  | {
+      type: "relation";
+      label: string;
+      target: "self" | HKObject;
+      required?: boolean;
     };
 
 /**
  * Represents an object in the system.
  */
-export type HKObject<T extends string> = {
+export type HKObject<
+  T extends string = string,
+  U extends Record<string, HKObjectAttribute> = Record<
+    string,
+    HKObjectAttribute
+  >,
+> = {
   type: T;
-  attributes: Record<string, HKObjectAttribute>;
+  attributes: U;
 };
 
 /**
