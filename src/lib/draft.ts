@@ -1,3 +1,36 @@
+/**
+ * Draft event-sourcing implementation using SQLite for persistence and Zod for
+ * projection schemas and validation.
+ *
+ * The example defines a `User` projection, dispatches `UserCreated` events, and
+ * queries the resulting read model.
+ *
+ * ## Audit metadata
+ *
+ * The `Event` table currently stores only `type` and `payload`. For a complete
+ * audit trail, the system must add at least a timestamp, `actorId`, `aggregateId`,
+ * and (maybe) `scope`.
+ *
+ * ## Projection replay
+ *
+ * Projections must be rebuildable from the event log. A future `replay()`
+ * function should:
+ *
+ * 1. Drop the existing projection tables.
+ * 2. Recreate them from the current Zod schemas.
+ * 3. Read events in order with `SELECT * FROM Event ORDER BY id ASC`.
+ * 4. Pass each event through every projection's `apply()` function.
+ *
+ * ## Optimistic concurrency
+ *
+ * Concurrent updates to the same aggregate must not silently overwrite one
+ * another. Each event should have a version scoped to its `aggregateId`. If two
+ * clients load version 5 and both attempt to write version 6, the database must
+ * reject the second write with a unique constraint on `(aggregateId, version)`.
+ *
+ * @packageDocumentation
+ */
+
 import type { SQLInputValue } from "node:sqlite";
 import { DatabaseSync } from "node:sqlite";
 import * as z from "zod";
@@ -15,6 +48,10 @@ type HKProjection<TEvent extends HKEvent = HKEvent> = {
 };
 
 const db = new DatabaseSync(":memory:");
+
+db.exec("PRAGMA journal_mode = WAL");
+db.exec("PRAGMA synchronous = NORMAL");
+db.exec("PRAGMA foreign_keys = ON");
 
 db.exec(`
   CREATE TABLE IF NOT EXISTS Event (
