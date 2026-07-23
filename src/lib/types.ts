@@ -86,8 +86,33 @@ export type HKEventId = HKBrand<number, "HKEventId">;
  */
 export type HKEvent<T extends string, U> = {
   id: HKEventId;
-  actorId: HKActorId;
+  actorId?: HKActorId;
   type: T;
   payload: U;
   recordedAt: HKInstant;
+};
+
+/**
+ * Represents a unique identifier for a record.
+ */
+export type HKRecordId = HKBrand<number, "HKRecordId">;
+
+export type HKRecordValues<T extends HKObject> = {
+  [K in keyof T["attributes"]]: {
+    string: string;
+    number: number;
+    boolean: boolean;
+    relation: number;
+  }[T["attributes"][K]["type"]];
+};
+
+/**
+ * Represents a record in the system.
+ */
+export type HKRecord<T extends HKObject> = {
+  id: HKRecordId;
+  actorId?: HKActorId;
+  type: T["type"];
+  values: HKRecordValues<T>;
+  createdAt: HKInstant;
 };
