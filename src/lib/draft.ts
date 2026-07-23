@@ -1,6 +1,11 @@
 import { DatabaseSync } from "node:sqlite";
 
-import type { HKObject, HKObjectAttribute, HKRecord } from "./types";
+import type {
+  HKObjectType,
+  HKObjectAttributes,
+  HKObject,
+  HKRecord,
+} from "./types";
 
 const db = new DatabaseSync(":memory:");
 
@@ -24,7 +29,7 @@ const selectRecords = db.prepare(
    ORDER BY id DESC`,
 );
 
-function object<T extends string, U extends Record<string, HKObjectAttribute>>(
+function object<T extends HKObjectType, U extends HKObjectAttributes>(
   type: T,
   attributes: U,
 ): HKObject<T, U> {

@@ -34,6 +34,11 @@ export type HKActor = {
 };
 
 /**
+ * Represents a type for an object in the system.
+ */
+export type HKObjectType = string;
+
+/**
  * Represents an attribute of an object in the system.
  */
 export type HKObjectAttribute =
@@ -63,14 +68,16 @@ export type HKObjectAttribute =
     };
 
 /**
+ * Represents a collection of attributes for an object in the system.
+ */
+export type HKObjectAttributes = Record<HKObjectType, HKObjectAttribute>;
+
+/**
  * Represents an object in the system.
  */
 export type HKObject<
-  T extends string = string,
-  U extends Record<string, HKObjectAttribute> = Record<
-    string,
-    HKObjectAttribute
-  >,
+  T extends HKObjectType = HKObjectType,
+  U extends HKObjectAttributes = HKObjectAttributes,
 > = {
   type: T;
   attributes: U;
@@ -98,12 +105,15 @@ export type HKEvent<T extends string, U> = {
 export type HKRecordId = HKBrand<number, "HKRecordId">;
 
 export type HKRecordValues<T extends HKObject> = {
-  [K in keyof T["attributes"]]: {
-    string: string;
-    number: number;
-    boolean: boolean;
-    relation: number;
-  }[T["attributes"][K]["type"]];
+  [K in keyof T["attributes"]]: T["attributes"][K] extends { type: "string" }
+    ? string
+    : T["attributes"][K] extends { type: "number" }
+      ? number
+      : T["attributes"][K] extends { type: "boolean" }
+        ? boolean
+        : T["attributes"][K] extends { type: "relation" }
+          ? number
+          : never;
 };
 
 /**
