@@ -1,9 +1,20 @@
+import type { SQLInputValue } from "node:sqlite";
 import { DatabaseSync } from "node:sqlite";
 import * as z from "zod";
 
-const db = new DatabaseSync(":memory:");
+type HKEvent<TPayload = unknown> = {
+  type: string;
+  payload: TPayload;
+};
 
-const sql = db.createTagStore();
+type HKProjection<TEvent extends HKEvent = HKEvent> = {
+  name: string;
+  schema: z.ZodObject;
+  apply(event: TEvent): [string, ...SQLInputValue[]] | void;
+  all(): [string, ...SQLInputValue[]];
+};
+
+const db = new DatabaseSync(":memory:");
 
 db.exec(`
   CREATE TABLE IF NOT EXISTS Event (
@@ -13,129 +24,135 @@ db.exec(`
   ) STRICT
 `);
 
-db.exec(`
-  CREATE TABLE IF NOT EXISTS Object (
-    id INTEGER PRIMARY KEY,
-    eventId INTEGER NOT NULL REFERENCES Event(id),
-    pid TEXT NOT NULL,
-    type TEXT NOT NULL,
-    state TEXT NOT NULL,
-    version INTEGER NOT NULL DEFAULT 1
-  ) STRICT
-`);
+function createStore<TEvent extends HKEvent = HKEvent>() {
+  return function <const TProjection extends HKProjection<TEvent>>(
+    projections: TProjection[],
+  ) {
+    for (const projection of projections) {
+      const columns = Object.entries(projection.schema.shape).flatMap(
+        ([key, value]) => {
+          if (value instanceof z.ZodString) {
+            return `${key} TEXT`;
+          }
 
-function object<T extends string, U extends z.ZodObject>(type: T, schema: U) {
-  return {
-    all() {
-      return sql.all`SELECT pid, state FROM Object WHERE type = ${type}`.map(
-        (row) => ({
-          pid: String(row.pid),
-          ...schema.parse(
-            typeof row.state === "string" && JSON.parse(row.state),
-          ),
-        }),
+          if (value instanceof z.ZodNumber) {
+            return `${key} INTEGER`;
+          }
+
+          if (value instanceof z.ZodBoolean) {
+            return `${key} BOOLEAN`;
+          }
+
+          return [];
+        },
       );
-    },
 
-    get(pid: string) {
-      const row = sql.get`SELECT state FROM Object WHERE pid = ${pid}`;
+      db.exec(`
+        CREATE TABLE IF NOT EXISTS ${projection.name} (
+          id INTEGER PRIMARY KEY,
+          ${columns.join(",\n")}
+        ) STRICT
+      `);
+    }
 
-      if (!row) {
-        throw new Error(`Object with pid ${pid} and type ${type} not found`);
-      }
+    return {
+      ...projections.reduce(
+        (acc, projection) => {
+          return {
+            ...acc,
+            [projection.name]: {
+              all() {
+                const result = projection.all();
 
-      return {
-        pid,
-        ...schema.parse(typeof row.state === "string" && JSON.parse(row.state)),
-      };
-    },
+                return z
+                  .array(projection.schema)
+                  .parse(db.prepare(result[0]).all());
+              },
+            },
+          };
+        },
+        {} as Record<
+          TProjection["name"],
+          { all(): z.infer<TProjection["schema"]>[] }
+        >,
+      ),
 
-    // @todo: currently we have a naive projection mechanism
-    insert(data: z.infer<U>) {
-      const event = {
-        type: "ObjectCreated",
-        payload: { pid: crypto.randomUUID(), type, data },
-      };
+      dispatch(event: TEvent) {
+        db.exec("BEGIN TRANSACTION");
 
-      const { lastInsertRowid: eventId } =
-        sql.run`INSERT INTO Event (type, payload) VALUES (${event.type}, ${JSON.stringify(
-          event.payload,
-        )})`;
+        try {
+          db.prepare("INSERT INTO Event (type, payload) VALUES (?, ?)").run(
+            event.type,
+            JSON.stringify(event.payload),
+          );
 
-      sql.run`INSERT INTO Object (eventId, pid, type, state) VALUES (${eventId}, ${event.payload.pid}, ${event.payload.type}, ${JSON.stringify(
-        event.payload.data,
-      )})`;
+          for (const projection of projections) {
+            const result = projection.apply(event);
 
-      return event.payload;
-    },
+            if (result) {
+              db.prepare(result[0]).run(...result.slice(1));
+            }
+          }
 
-    // @todo: currently we have a naive projection mechanism
-    update(pid: string, data: Partial<z.infer<U>>) {
-      const event = {
-        type: "ObjectUpdated",
-        payload: { pid, type, data },
-      };
+          db.exec("COMMIT");
+        } catch (error) {
+          db.exec("ROLLBACK");
 
-      const { lastInsertRowid: eventId } =
-        sql.run`INSERT INTO Event (type, payload) VALUES (${event.type}, ${JSON.stringify(
-          event.payload,
-        )})`;
-
-      // @todo: transaction
-      const existing = sql.get`SELECT state FROM Object WHERE pid = ${pid} AND type = ${type}`;
-
-      if (!existing) {
-        throw new Error(`Object with pid ${pid} and type ${type} not found`);
-      }
-
-      sql.run`UPDATE Object SET eventId = ${eventId}, state = ${JSON.stringify({
-        ...(typeof existing.state === "string" && JSON.parse(existing.state)),
-        ...data,
-      })}, version = version + 1 WHERE pid = ${event.payload.pid} AND type = ${type}`;
-
-      return event.payload;
-    },
-
-    // @todo: currently we have a naive projection mechanism
-    delete(pid: string) {
-      const event = {
-        type: "ObjectDeleted",
-        payload: { pid },
-      };
-
-      sql.run`INSERT INTO Event (type, payload) VALUES (${event.type}, ${JSON.stringify(
-        event.payload,
-      )})`;
-
-      sql.run`DELETE FROM Object WHERE pid = ${pid} AND type = ${type}`;
-    },
+          throw error;
+        }
+      },
+    };
   };
 }
 
-const User = object(
-  "User",
-  z.strictObject({
-    name: z.string().min(1),
-  }),
-);
+type Event = {
+  type: "UserCreated";
+  payload: {
+    pid: string;
+    name: string;
+  };
+};
 
-const inserted = User.insert({
-  name: "Alice",
+const store = createStore<Event>()([
+  {
+    name: "User",
+    schema: z.object({
+      pid: z.string(),
+      name: z.string(),
+    }),
+    apply(event) {
+      switch (event.type) {
+        case "UserCreated": {
+          return [
+            `INSERT INTO ${this.name} (pid, name) VALUES (?, ?)`,
+            event.payload.pid,
+            event.payload.name,
+          ];
+        }
+      }
+    },
+    all() {
+      return [`SELECT * FROM ${this.name}`];
+    },
+  },
+]);
+
+store.dispatch({
+  type: "UserCreated",
+  payload: {
+    pid: crypto.randomUUID(),
+    name: "John",
+  },
 });
 
-const updated = User.update(inserted.pid, {
-  name: "John",
+store.dispatch({
+  type: "UserCreated",
+  payload: {
+    pid: crypto.randomUUID(),
+    name: "Alice",
+  },
 });
 
-const user = User.get(inserted.pid);
+const users = store.User.all();
 
-const users = User.all();
-
-console.log({
-  inserted,
-  updated,
-  user,
-  users,
-  events: sql.all`SELECT * FROM Event`.map((row) => ({ ...row })),
-  objects: sql.all`SELECT * FROM Object`.map((row) => ({ ...row })),
-});
+console.log(users);
