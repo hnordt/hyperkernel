@@ -113,9 +113,9 @@ Use Zod for runtime schema validation of untrusted structured data, including re
 - Do not replace runtime validation with TypeScript casts, ad hoc property checks, or handwritten validators unless there is a documented reason.
 - Keep Drizzle table definitions as the database schema source of truth; use Zod for input/output validation around those database operations.
 
-## Tailwind Plus Elements
+## Interactive UI Primitives
 
-When implementing dialogs, dropdown menus, popovers, selects, tabs, disclosures, command palettes, autocompletes, copy buttons, or similar interactive Tailwind UI primitives, use Tailwind Plus Elements as the headless behavior layer instead of hand-rolling keyboard, focus, aria, popover, or dialog behavior.
+Purposefully avoid headless UI libraries. Build interactive primitives with modern HTML and Web Platform features such as `<dialog>`, the Popover API, `<details>` and `<summary>`, native form controls, `<datalist>`, and the Clipboard API. Add small, local Svelte behavior only when the platform does not provide the complete interaction, while preserving native keyboard, focus, and accessibility semantics. Do not introduce a headless UI dependency without an explicit architecture change.
 
 ## Commit Messages
 

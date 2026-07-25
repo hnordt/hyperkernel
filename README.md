@@ -12,31 +12,51 @@ Hyperkernel aims to bring to business software the same level of fluidity, craft
 
 Hyperkernel is in the early design stage. The immediate objective is to validate the architecture through the v0.1 reference applications rather than to build a general-purpose business operating system all at once.
 
-## Scripts
+### Current implementation
 
-Install dependencies:
+The repository currently contains:
+
+- a SvelteKit application shell with a Node.js production adapter;
+- the server-only Drizzle and SQLite database boundary;
+- formatting, type-checking, unit-test, browser-test, and build tooling;
+- architecture terminology and an isolated event-sourcing spike.
+
+The SDK, reference applications, permissions, persistent event history, supervised agent execution, and production database schema described below are not implemented yet.
+
+## Getting started
+
+Hyperkernel requires Node.js 24 or later and npm 11 or later.
 
 ```sh
-npm install
-```
-
-Start the development server:
-
-```sh
+npm ci
+cp .env.example .env
 npm run dev
 ```
 
-Build for production:
+The development server prints its local URL after startup. The default SQLite database path is `./local.db`.
+
+## Verification
 
 ```sh
+npx playwright install chromium
+npm run check
+npm run lint
+npm run test
 npm run build
 ```
 
-Preview the production build:
+## Self-hosting the prototype
+
+Build and start the Node.js server:
 
 ```sh
-npm run preview
+npm run build
+npm start
 ```
+
+Set `DATABASE_URL` to a writable, persistent SQLite path. When running behind a reverse proxy, set `ORIGIN` to the public application URL or configure trusted forwarded-host and forwarded-protocol headers according to the SvelteKit Node adapter documentation.
+
+The current prototype does not have a production database schema or migration set. Self-hosted instances are therefore suitable for development and architectural evaluation, not durable production data. Backup, restore, and upgrade guarantees will be documented when the first persistent application flow is introduced.
 
 ## Core model
 
@@ -127,3 +147,11 @@ The kernel should only gain abstractions required by real applications. Features
 ### A thin shell over a strong kernel
 
 Visual polish and multitasking matter, but the platform's durable value comes from interoperability, permissions, supervision, and auditability.
+
+## Contributing
+
+Read [CONTRIBUTING.md](CONTRIBUTING.md) before proposing or implementing a change. Security vulnerabilities must be reported privately according to [SECURITY.md](SECURITY.md). Participation in project spaces is governed by the [Code of Conduct](CODE_OF_CONDUCT.md).
+
+## License
+
+Hyperkernel is available under the [MIT License](LICENSE).

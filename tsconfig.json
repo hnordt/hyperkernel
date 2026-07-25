@@ -1,6 +1,7 @@
 {
   "extends": "./.svelte-kit/tsconfig.json",
   "compilerOptions": {
+    "types": ["node", "better-sqlite3"],
     "strict": true,
     "skipLibCheck": true,
     "esModuleInterop": true,

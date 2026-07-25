@@ -1,0 +1,6 @@
+contact_links:
+  - name: Report a security vulnerability
+    url: https://github.com/hnordt/hyperkernel/security/advisories/new
+    about: Report security vulnerabilities privately instead of opening a public issue.
+
+blank_issues_enabled: false

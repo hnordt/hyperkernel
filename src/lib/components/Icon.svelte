@@ -9,7 +9,12 @@
   let { name, title, ...rest }: Props = $props();
 </script>
 
-<svg viewBox="0 0 640 640" aria-hidden={title ? undefined : true} {...rest}>
+<svg
+  viewBox="0 0 640 640"
+  role={title ? "img" : undefined}
+  aria-hidden={title ? undefined : true}
+  {...rest}
+>
   {#if title}
     <title>{title}</title>
   {/if}

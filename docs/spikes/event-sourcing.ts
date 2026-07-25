@@ -1,6 +1,6 @@
 /**
- * Draft event-sourcing implementation using SQLite for persistence and Zod for
- * projection schemas and validation.
+ * Architecture spike for an event-sourcing implementation using SQLite for
+ * persistence and Zod for projection schemas and validation.
  *
  * The example defines a `User` projection, dispatches `UserCreated` events, and
  * queries the resulting read model.
@@ -28,7 +28,9 @@
  * clients load version 5 and both attempt to write version 6, the database must
  * reject the second write with a unique constraint on `(aggregateId, version)`.
  *
- * @packageDocumentation
+ * This file is illustrative and is not part of Hyperkernel's production
+ * database boundary. Production database access uses Drizzle ORM with the
+ * better-sqlite3 driver under `src/lib/server/db`.
  */
 
 import type { SQLInputValue } from "node:sqlite";

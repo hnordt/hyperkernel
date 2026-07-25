@@ -4,7 +4,6 @@
 
   import favicon from "$lib/assets/favicon.svg";
 
-  import "@tailwindplus/elements";
   import "./layout.css";
 
   let { children } = $props();
