@@ -43,7 +43,7 @@ For browser-based QA, screenshots, console checks, and visual debugging, default
 
 SvelteKit app with Node adapter, Svelte 5 runes mode, SQLite via the built-in `node:sqlite` module, and native CSS.
 
-- **`src/routes/`** — SvelteKit file-based routes. Document-level styles belong in `+layout.svelte`; page-specific styles belong in their Svelte components.
+- **`src/routes/`** — SvelteKit file-based routes. Document-level styles belong in `layout.css`; page-specific styles belong in their Svelte components.
 - **`src/lib/server/db/`** — Database layer. `index.ts` exports the shared `DatabaseSync` connection. Event persistence and projections belong behind this server-only boundary.
 - **`src/lib/assets/`** — Static assets referenced in components.
 
@@ -51,7 +51,7 @@ Database URL is read from `DATABASE_URL` env var (`.env` points to `./local.db` 
 
 Database integration must use the built-in `node:sqlite` module. Keep connection creation centralized in `src/lib/server/db/index.ts`, append durable facts to the event log, and build read models through projections owned by the application database layer. Do not introduce an ORM, another SQLite client, or unrelated ad hoc database access unless the architecture is intentionally changed and documented.
 
-Styling uses native CSS in scoped Svelte `<style>` blocks. Keep global CSS limited to document-level rules in `+layout.svelte`. Font is Inter (via `@fontsource-variable/inter`), set as the document default in `+layout.svelte`.
+Styling uses native CSS in scoped Svelte `<style>` blocks. Keep global CSS limited to document-level rules in `layout.css`. Font is Inter (via `@fontsource-variable/inter`), imported in `+layout.svelte` and set as the document default in `layout.css`.
 
 Svelte 5+ and SvelteKit 2+ are required. Use Svelte 5 runes for all non-library app code, SvelteKit remote functions for server/client RPC-style flows, and avoid legacy Svelte 4 patterns unless maintaining third-party/library code.
 
@@ -96,7 +96,7 @@ Prefer small, direct, production-oriented changes. The best patch is the smalles
 
 Use native CSS in scoped Svelte `<style>` blocks for component and page styling. Keep selectors local, prefer semantic class names for distinct component parts, and use CSS custom properties for values that cross component boundaries.
 
-Keep global CSS limited to document-level concerns such as fonts, box sizing, and browser resets. Add those rules to `src/routes/+layout.svelte`; do not create a global stylesheet for component-specific styles.
+Keep global CSS limited to document-level concerns such as fonts, box sizing, and browser resets. Add those rules to `src/routes/layout.css`; do not add component-specific styles to the global stylesheet.
 
 ## Schema Validation
 
