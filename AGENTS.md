@@ -11,7 +11,7 @@ This file is the canonical project guidance for coding agents working in this re
 
 - **Language**: TypeScript
 - **Package Manager**: npm
-- **Add-ons**: prettier, eslint, vitest, playwright, tailwindcss, sveltekit-adapter, drizzle, mcp
+- **Add-ons**: prettier, eslint, vitest, playwright, tailwindcss, sveltekit-adapter, mcp
 
 ## Commands
 
@@ -26,10 +26,6 @@ npm run test         # Run unit and e2e tests
 npm run test:unit    # Run Vitest unit tests
 npm run test:e2e     # Run Playwright e2e tests
 
-npm run db:generate  # Generate Drizzle migrations
-npm run db:migrate   # Apply migrations
-npm run db:push      # Push schema changes directly (no migration file)
-npm run db:studio    # Open Drizzle Studio UI
 ```
 
 Unit tests split into two Vitest projects:
@@ -45,15 +41,15 @@ For browser-based QA, screenshots, console checks, and visual debugging, default
 
 ## Architecture
 
-SvelteKit app with Node adapter, Svelte 5 runes mode, SQLite via Drizzle ORM, and Tailwind CSS v4.
+SvelteKit app with Node adapter, Svelte 5 runes mode, SQLite via the built-in `node:sqlite` module, and Tailwind CSS v4.
 
 - **`src/routes/`** — SvelteKit file-based routes. Global styles in `layout.css` (imported by `+layout.svelte`).
-- **`src/lib/server/db/`** — Database layer. `index.ts` exports a singleton `db` (Drizzle instance). `schema.ts` is where all table definitions go.
+- **`src/lib/server/db/`** — Database layer. `index.ts` exports the shared `DatabaseSync` connection. Event persistence and projections belong behind this server-only boundary.
 - **`src/lib/assets/`** — Static assets referenced in components.
 
 Database URL is read from `DATABASE_URL` env var (`.env` points to `./local.db` for local dev). Server-only — never import `src/lib/server/` from client code.
 
-Database integration must use Drizzle ORM with the `better-sqlite3` driver. Keep database access centralized through `src/lib/server/db/index.ts`, import Drizzle from `drizzle-orm/better-sqlite3`, and define tables in `src/lib/server/db/schema.ts` with `drizzle-orm/sqlite-core`. Do not introduce another SQLite client, ORM, or ad hoc database wrapper unless the architecture is intentionally changed and documented.
+Database integration must use the built-in `node:sqlite` module. Keep connection creation centralized in `src/lib/server/db/index.ts`, append durable facts to the event log, and build read models through projections owned by the application database layer. Do not introduce an ORM, another SQLite client, or unrelated ad hoc database access unless the architecture is intentionally changed and documented.
 
 Tailwind v4 is configured via the Vite plugin (no `tailwind.config.js`). The `@tailwindcss/forms` plugin is applied in `layout.css`. Font is Inter (via `@fontsource-variable/inter`), set as the default in `layout.css`.
 
@@ -111,7 +107,7 @@ Use Zod for runtime schema validation of untrusted structured data, including re
 - Define Zod schemas at the boundary where data enters the system.
 - Infer TypeScript types from Zod schemas instead of duplicating separate manual interfaces for the same shape.
 - Do not replace runtime validation with TypeScript casts, ad hoc property checks, or handwritten validators unless there is a documented reason.
-- Keep Drizzle table definitions as the database schema source of truth; use Zod for input/output validation around those database operations.
+- Use Zod for input/output validation around database operations.
 
 ## Interactive UI Primitives
 

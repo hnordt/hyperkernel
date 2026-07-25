@@ -1,9 +1,8 @@
-import { drizzle } from "drizzle-orm/better-sqlite3";
+import { DatabaseSync } from "node:sqlite";
 import { env } from "$env/dynamic/private";
-import * as schema from "./schema";
 
-if (!env.DATABASE_URL) {
-  throw new Error("DATABASE_URL is not set");
-}
+export const db = new DatabaseSync(env.DATABASE_URL, { timeout: 5000 });
 
-export const db = drizzle(env.DATABASE_URL, { schema });
+db.exec("PRAGMA journal_mode = WAL");
+db.exec("PRAGMA synchronous = NORMAL");
+db.exec("PRAGMA foreign_keys = ON");

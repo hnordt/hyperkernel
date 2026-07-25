@@ -11,12 +11,6 @@ export default defineConfig({
       experimental: {
         remoteFunctions: true,
       },
-      typescript: {
-        config: (config) => ({
-          ...config,
-          include: [...config.include, "../drizzle.config.ts"],
-        }),
-      },
       compilerOptions: {
         experimental: {
           async: true,

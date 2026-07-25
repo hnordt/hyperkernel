@@ -25,6 +25,7 @@
     "npm": ">=11"
   },
   "scripts": {
+    "prepare": "svelte-kit sync && husky",
     "dev": "vite dev",
     "build": "vite build",
     "preview": "vite preview",
@@ -34,17 +35,10 @@
     "format": "prettier --write .",
     "test": "npm run test:unit -- --run && npm run test:e2e",
     "test:unit": "vitest",
-    "test:e2e": "playwright test",
-    "db:generate": "drizzle-kit generate",
-    "db:migrate": "drizzle-kit migrate",
-    "db:push": "drizzle-kit push",
-    "db:studio": "drizzle-kit studio",
-    "prepare": "svelte-kit sync && husky"
+    "test:e2e": "playwright test"
   },
   "dependencies": {
     "@fontsource-variable/inter": "^5.3.0",
-    "better-sqlite3": "^13.0.1",
-    "drizzle-orm": "^0.45.2",
     "zod": "^4.4.3"
   },
   "devDependencies": {
@@ -55,10 +49,8 @@
     "@sveltejs/vite-plugin-svelte": "^7.2.0",
     "@tailwindcss/forms": "^0.5.11",
     "@tailwindcss/vite": "^4.3.3",
-    "@types/better-sqlite3": "^7.6.13",
     "@types/node": "^26.1.1",
     "@vitest/browser-playwright": "^4.1.10",
-    "drizzle-kit": "^0.31.10",
     "eslint": "^10.8.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-svelte": "^3.22.0",
@@ -79,10 +71,6 @@
     "vitest-browser-svelte": "^3.0.0"
   },
   "allowScripts": {
-    "better-sqlite3@13.0.1": true,
-    "esbuild@0.18.20": true,
-    "esbuild@0.25.12": true,
-    "esbuild@0.28.1": true,
     "fsevents@2.3.2": true,
     "fsevents@2.3.3": true
   }
