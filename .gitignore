@@ -1,2 +1,22 @@
-node_modules/
+# macOS
 .DS_Store
+
+# Env
+.env
+.env.*
+!.env.example
+!.env.test
+
+# SQLite
+*.db
+
+# Node.js
+/node_modules
+
+# SvelteKit
+/.svelte-kit
+/build
+
+# Playwright
+/.playwright-mcp
+/test-results

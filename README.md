@@ -12,6 +12,32 @@ Hyperkernel aims to bring to business software the same level of fluidity, craft
 
 Hyperkernel is in the early design stage. The immediate objective is to validate the architecture through the v0.1 reference applications rather than to build a general-purpose business operating system all at once.
 
+## Scripts
+
+Install dependencies:
+
+```sh
+npm install
+```
+
+Start the development server:
+
+```sh
+npm run dev
+```
+
+Build for production:
+
+```sh
+npm run build
+```
+
+Preview the production build:
+
+```sh
+npm run preview
+```
+
 ## Core model
 
 Hyperkernel is built on a small set of primitives:
