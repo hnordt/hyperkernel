@@ -54,7 +54,7 @@ npm run build
 npm start
 ```
 
-Set `DATABASE_URL` to a writable, persistent SQLite path. When running behind a reverse proxy, set `ORIGIN` to the public application URL or configure trusted forwarded-host and forwarded-protocol headers according to the SvelteKit Node adapter documentation.
+Set `DATABASE_URL` to a writable SQLite path for persistent storage. If `DATABASE_URL` is not set, Hyperkernel uses an in-memory SQLite database and all data is lost when the process stops. When running behind a reverse proxy, set `ORIGIN` to the public application URL or configure trusted forwarded-host and forwarded-protocol headers according to the SvelteKit Node adapter documentation.
 
 The current prototype does not have a production database schema or migration set. Self-hosted instances are therefore suitable for development and architectural evaluation, not durable production data. Backup, restore, and upgrade guarantees will be documented when the first persistent application flow is introduced.
 
