@@ -4,8 +4,6 @@
 
   import favicon from "$lib/assets/favicon.svg";
 
-  import "./layout.css";
-
   let { children } = $props();
 </script>
 
@@ -19,3 +17,43 @@
 </svelte:head>
 
 {@render children()}
+
+<style>
+  :global {
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+
+    *:not(dialog) {
+      margin: 0;
+    }
+
+    html {
+      font-family: "Inter Variable", system-ui;
+
+      /* Lock document scrolling for the application canvas */
+      overflow: hidden;
+
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    picture,
+    img,
+    svg,
+    canvas,
+    video {
+      display: block;
+      max-inline-size: 100%;
+    }
+
+    input,
+    textarea,
+    select,
+    button {
+      font: inherit;
+    }
+  }
+</style>

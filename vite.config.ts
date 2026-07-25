@@ -1,12 +1,10 @@
 import { defineConfig } from "vitest/config";
-import tailwindcss from "@tailwindcss/vite";
 import { sveltekit } from "@sveltejs/kit/vite";
 import adapter from "@sveltejs/adapter-node";
 import { playwright } from "@vitest/browser-playwright";
 
 export default defineConfig({
   plugins: [
-    tailwindcss(),
     sveltekit({
       experimental: {
         remoteFunctions: true,
