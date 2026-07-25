@@ -55,7 +55,7 @@ Database URL is read from `DATABASE_URL` env var (`.env` points to `./local.db` 
 
 Database integration must use Drizzle ORM with the `better-sqlite3` driver. Keep database access centralized through `src/lib/server/db/index.ts`, import Drizzle from `drizzle-orm/better-sqlite3`, and define tables in `src/lib/server/db/schema.ts` with `drizzle-orm/sqlite-core`. Do not introduce another SQLite client, ORM, or ad hoc database wrapper unless the architecture is intentionally changed and documented.
 
-Tailwind v4 is configured via the Vite plugin (no `tailwind.config.js`). The `@tailwindcss/forms` plugin is applied in `layout.css`. Font is Geist (via `@fontsource/geist`), set as the default in `layout.css`.
+Tailwind v4 is configured via the Vite plugin (no `tailwind.config.js`). The `@tailwindcss/forms` plugin is applied in `layout.css`. Font is Inter (via `@fontsource-variable/inter`), set as the default in `layout.css`.
 
 Svelte 5+ and SvelteKit 2+ are required. Use Svelte 5 runes for all non-library app code, SvelteKit remote functions for server/client RPC-style flows, and avoid legacy Svelte 4 patterns unless maintaining third-party/library code.
 

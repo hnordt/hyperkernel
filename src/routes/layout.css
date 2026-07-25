@@ -3,5 +3,5 @@
 @plugin "@tailwindcss/forms";
 
 @theme {
-  --font-sans: "Geist", system-ui, sans-serif;
+  --font-sans: "Inter Variable", system-ui, sans-serif;
 }
