@@ -6,7 +6,7 @@ When older documentation, an experiment, or a spike conflicts with these files, 
 
 ## Mission
 
-Hyperkernel is a self-hostable application platform built around a small, highly trusted kernel. Developers and organizations build applications, interfaces, workflows, and integrations on top of it.
+Hyperkernel is a self-hostable application platform built around a small, highly trusted kernel. Developers and organizations build and run modular applications on Hyperkernel. Together, those applications form a software platform tailored to the work they support.
 
 Optimize kernel work for correctness, auditability, deterministic recovery, security, and long-term compatibility. Optimize work outside the kernel for safe iteration without allowing it to bypass kernel contracts.
 
