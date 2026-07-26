@@ -1,27 +1,147 @@
 # Hyperkernel
 
-**A self-hostable, extensible business platform for building and running modular applications in modern web browsers.**
+**Open-source primitives for building reliable, self-hosted platforms with developers and AI agents.**
 
-Hyperkernel is an open-source application runtime for building business software around a shared operational core. It combines interoperable applications, capability-based permissions, supervised agents, and an auditable history of human and automated work.
+Hyperkernel is an open-source project building a small set of production-grade primitives for developers creating platforms for themselves or for small businesses, with or without AI assistance. The goal is software that can be trusted, audited, repaired, and continuously evolved.
 
-The goal is not to recreate a desktop in the browser. It is to create an extensible kernel: a shared model that enables business applications to operate on the same objects and relationships, enforce consistent permissions, and record actions and state changes in a shared, immutable, and auditable event history.
+The project separates software into two trust zones:
 
-Hyperkernel aims to bring to business software the same level of fluidity, craft, and direct manipulation that tools such as Figma provide to designers.
+- a small kernel whose contracts are designed to be stable, extensively tested, and reviewed by experienced humans;
+- applications, interfaces, workflows, and integrations that can evolve faster, whether built by developers, developers using AI, or AI agents operating within explicit boundaries.
+
+Fast-moving code may extend the system, but it may never bypass the kernel's command, event, authorization, or audit contracts.
+
+## Why Hyperkernel
+
+Most product code does not need the same review cost as the foundation that protects data, history, permissions, and recovery.
+
+Hyperkernel's architecture concentrates the highest assurance in a small core. That core provides the durable rules; everything above it can iterate at a speed appropriate to its risk. The goal is to make AI-assisted development practical without asking users to trust unreviewed code with unrestricted access to authoritative state.
+
+Reliability, auditability, self-hosting, developer experience, and user experience are all platform requirements. None is treated as optional polish.
+
+## Core architecture
+
+Every durable change follows the same path:
+
+```mermaid
+flowchart LR
+  A["Human, application, or AI agent"] --> S["Submit command"]
+  S --> V["Authenticate and validate envelope"]
+  V --> C["Record command intent"]
+  C --> D["Authorize and decide"]
+  D --> E["Commit immutable event(s)"]
+  E --> L[("Ordered event log")]
+  L --> P["Affected projections"]
+  P --> R["APIs and UI"]
+  L --> T["Replay and time travel"]
+```
+
+### Commands record intent
+
+A command is an immutable record of what an identified actor asked the system to do. Humans, applications, automations, and AI agents all use the same command boundary.
+
+The actor is authenticated and the command envelope is validated and sanitized before durable recording. The command is then authorized and evaluated. A rejected command makes no domain change, but its outcome remains auditable. A committed state-changing command and its events form one outcome; the command never updates authoritative state or a projection directly.
+
+### Events record facts
+
+An event records a fact that the kernel accepted. Events are the source of truth for durable domain state.
+
+Once appended, an event is never edited or deleted. No supported application, administrative, migration, or upgrade path may rewrite it, even when its type or schema version is later deprecated. A mistake is corrected by submitting another command and appending a corrective or compensating event. History remains intact, including the original mistake and its correction.
+
+### Projections build read models
+
+Applications read data through projections. When an event is appended, every projection that declares a dependency on that event is advanced from its checkpoint.
+
+A projection is derived state, never the source of truth. It must be possible to discard it and deterministically rebuild it from the ordered event log. Incremental processing and a clean replay of the same events with the same projection version must produce equivalent results.
+
+The kernel owns projection execution, isolation, checkpointing, rebuild, and cutover. Applications may define their own read models through constrained contracts. A definition crosses into the kernel review boundary when it participates in an authoritative transaction or platform authorization.
+
+Hyperkernel will provide protected APIs and administrative interfaces to rebuild projections from zero, inspect progress and failures, and replace a projection only after a successful rebuild.
+
+### Replay enables recovery and time travel
+
+Replaying events up to a stable event position through a specified compatible projection version reconstructs the system's internal state as interpreted at that point. Preserving an exact historical interpretation also requires preserving the corresponding projection artifact. This enables auditing, debugging, recovery, historical inspection, and time travel without rewriting history.
+
+Replay reconstructs Hyperkernel state; it cannot undo an email already sent, a payment already processed, or another external effect. Those effects require explicit delivery, deduplication, reconciliation, and compensation contracts.
+
+### Versioning enables long-lived evolution
+
+Persisted events have explicit types and schema versions. A new version may replace a deprecated version for future writes, but historical versions remain stored and supported for replay.
+
+Deprecation means “stop producing this version,” never “remove it from history.” Compatibility code may translate an old event in memory, but it may not rewrite the stored record.
+
+## The trust boundary
+
+| Layer      | Examples                                                                                                                                                | Change standard                                                                                          |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
+| Kernel     | command processing, authorization, event storage, ordering, concurrency, projection runtime, checkpoints, rebuilds, replay, audit, and public contracts | Stable contracts, compatibility and recovery tests, and approval by an experienced human maintainer      |
+| Extensions | domain applications, projection definitions and read models, workflows, integrations, agent tools, and SDK packages                                     | Faster iteration through constrained public kernel contracts, with tests and review proportional to risk |
+| Experience | multitasking shell, application UI, administrative UI, and developer tooling                                                                            | Rapid product iteration without bypassing commands, permissions, events, or projection runtime           |
+
+AI may help author code in any layer. It does not lower the review standard. In particular, an AI agent cannot certify or approve a kernel change by itself.
+
+## Humans and AI agents
+
+People, services, and AI agents are actors under the same authorization and command model.
+
+Agents:
+
+- receive explicit identities, capabilities, context, and limits;
+- submit commands instead of accessing the database or event log directly;
+- leave an auditable record of consequential tool calls, approvals, commands, results, and failures;
+- require human approval for operations whose policy or risk demands it;
+- correct mistakes through new authorized commands and events, never hidden history edits.
+
+Auditability is not permission to persist secrets or erasable personal data forever. Sensitive information that may need restricted retention or erasure must use an explicit storage, encryption, or indirection design rather than being embedded blindly in immutable event payloads.
+
+## Platform experience
+
+Hyperkernel is intended to provide:
+
+- a self-hostable operational foundation;
+- typed, predictable APIs and excellent debugging and replay tooling;
+- a friendly multitasking workspace that preserves durable work context;
+- interfaces for inspecting commands, events, projections, agent work, and failures;
+- a stable kernel that independent developers and small teams can extend without maintaining a private platform fork.
+
+Persistent workspace changes follow the same command and event rules as other durable state. Ephemeral presentation details such as hover state do not need to enter the event log.
+
+## What can be built
+
+Examples include:
+
+- a business operations environment for an independent developer or small company;
+- a personal work and routine-management environment for developers;
+- auditable workflows in which people and external AI agents collaborate;
+- custom self-hosted platforms composed from shared kernel primitives.
+
+These are examples, not hard-coded products. Hyperkernel provides the foundation; applications provide the domain.
 
 ## Status
 
-Hyperkernel is in the early design stage. The immediate objective is to validate the architecture through the v0.1 reference applications rather than to build a general-purpose business operating system all at once.
-
-### Current implementation
+Hyperkernel is an early architecture prototype. This document defines the target contract and quality bar, not a claim that the repository is production-ready today.
 
 The repository currently contains:
 
-- a SvelteKit application shell with a Node.js production adapter;
-- the server-only Drizzle and SQLite database boundary;
-- formatting, type-checking, unit-test, browser-test, and build tooling;
-- architecture terminology and an isolated event-sourcing spike.
+- an early SvelteKit application shell with a Node.js adapter;
+- a centralized server-only SQLite connection using the built-in `node:sqlite` module;
+- formatting, type-checking, unit-test, browser-test, build, and CI tooling;
+- an isolated event-sourcing and projection spike under `docs/spikes/`.
 
-The SDK, reference applications, permissions, persistent event history, supervised agent execution, and production database schema described below are not implemented yet.
+Commands, the production event store, event versioning, replay, projection rebuilds, time travel, permissions, the public SDK, persistent multitasking, and external agent execution are not implemented yet.
+
+## First milestone
+
+The first milestone is a complete, small vertical slice that proves:
+
+- durable command recording and auditable acceptance or rejection;
+- an append-only, versioned event store with actor and causation metadata;
+- a deterministic projection runtime with checkpoints, transactional kernel projections, and recoverable extension projections;
+- clean projection rebuilds through a protected API and UI;
+- historical inspection at a selected event position;
+- one useful self-hosted workflow using the same public contracts intended for future applications and agents.
+
+Every kernel primitive must be required by that working flow. Hyperkernel will extract stable primitives from concrete use rather than speculate about a universal platform.
 
 ## Getting started
 
@@ -33,7 +153,7 @@ cp .env.example .env
 npm run dev
 ```
 
-The development server prints its local URL after startup. The default SQLite database path is `./local.db`.
+The development server prints its local URL after startup.
 
 ## Verification
 
@@ -45,112 +165,22 @@ npm run test
 npm run build
 ```
 
-## Self-hosting the prototype
+## Self-hosting
 
-Build and start the Node.js server:
+Self-hosting is a core goal, but the current prototype is not suitable for important production data.
 
 ```sh
 npm run build
 npm start
 ```
 
-Set `DATABASE_URL` to a writable SQLite path for persistent storage. If `DATABASE_URL` is not set, Hyperkernel uses an in-memory SQLite database and all data is lost when the process stops. When running behind a reverse proxy, set `ORIGIN` to the public application URL or configure trusted forwarded-host and forwarded-protocol headers according to the SvelteKit Node adapter documentation.
-
-The current prototype does not have a production database schema or migration set. Self-hosted instances are therefore suitable for development and architectural evaluation, not durable production data. Backup, restore, and upgrade guarantees will be documented when the first persistent application flow is introduced.
-
-## Core model
-
-Hyperkernel is built on a small set of primitives:
-
-- apps define and package application behavior;
-- objects represent typed, globally addressable state;
-- relationships connect objects through typed references;
-- actions define operations that actors can perform;
-- events provide an immutable record of actions and state changes.
-
-Applications are built by declaring new object types, relationships, actions, and interfaces through the Hyperkernel SDK.
-
-## Supervised agents
-
-Agents are first-class actors, but they cannot access the database or storage layer directly. They must:
-
-1. receive explicit context and capabilities;
-2. invoke actions exposed by applications;
-3. produce artifacts and supporting evidence;
-4. request human approval when required;
-5. have their model, instructions, tools, inputs, actions, and results recorded;
-6. allow their work to be inspected and, where supported, reversed.
-
-The kernel records human and agent actions through the same event and audit infrastructure, while applying different policies and approval requirements.
-
-## Multitasking shell
-
-The shell exposes the kernel through a persistent, business-oriented workspace. It should allow users to:
-
-- open multiple objects—such as a client, a document, and an agent run—side by side;
-- drag an object from one application into another to create a link;
-- keep multiple activities open and persistent;
-- restore the complete context of a task;
-- monitor an agent working in the background;
-- inspect an object without leaving the current workflow.
-
-## v0.1 scope
-
-The first version is intended to prove the complete platform model with the smallest coherent implementation:
-
-- a persistent multitasking shell;
-- two small interoperable applications;
-- shared, globally addressable objects;
-- cross-application references;
-- capability-based permissions;
-- an immutable audit log;
-- one supervised agent integration;
-- a minimal SDK for declaring objects, actions, and capabilities.
-
-Every kernel component in v0.1 must be required by at least one working application flow.
-
-## Out of scope for v0.1
-
-- an application marketplace;
-- multiple agent providers;
-- a complete filesystem;
-- a generic visual automation builder;
-- a large library of management components;
-- advanced real-time collaboration.
-
-The first version will support a single agent provider. Additional providers should only be introduced after the execution, authorization, supervision, and audit contracts have been proven.
-
-## Design principles
-
-### Shared identity, modular domains
-
-The kernel owns identity, authorization, global references, and history. Applications own their domain models and business rules.
-
-### Capabilities over direct access
-
-Capabilities are scoped grants that authorize an actor to invoke specific actions on specific objects.
-
-Humans, applications, and agents act through explicit capabilities. No actor should bypass application contracts to modify data directly.
-
-### References over duplication
-
-Applications should link to shared objects rather than maintain disconnected copies of the same organization, person, document, or task.
-
-### Evidence by default
-
-Important actions should preserve who or what performed them, which inputs were used, what changed, and which artifacts were produced.
-
-### Extraction over speculation
-
-The kernel should only gain abstractions required by real applications. Features are generalized after repeated use, not in anticipation of every possible management system.
-
-### A thin shell over a strong kernel
-
-Visual polish and multitasking matter, but the platform's durable value comes from interoperability, permissions, supervision, and auditability.
+`DATABASE_URL` configures the SQLite connection path. The repository does not yet contain a production event schema, migrations, backup and restore guarantees, or an upgrade contract.
 
 ## Contributing
 
 Read [CONTRIBUTING.md](CONTRIBUTING.md) before proposing or implementing a change. Security vulnerabilities must be reported privately according to [SECURITY.md](SECURITY.md). Participation in project spaces is governed by the [Code of Conduct](CODE_OF_CONDUCT.md).
+
+Kernel changes require a higher evidence and review bar than application or interface changes. AI-generated contributions are welcome, but critical contracts must be understood and approved by experienced human maintainers.
 
 ## License
 

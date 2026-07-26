@@ -2,7 +2,7 @@
   "name": "@hnordt/hyperkernel",
   "version": "0.0.1",
   "private": true,
-  "description": "A self-hostable, extensible business platform for modular web applications.",
+  "description": "Open-source primitives for building reliable, auditable, self-hosted software platforms",
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -14,10 +14,8 @@
   },
   "keywords": [
     "application-platform",
-    "business-software",
-    "event-driven",
-    "self-hosted",
-    "sveltekit"
+    "event-sourcing",
+    "self-hosting"
   ],
   "type": "module",
   "engines": {
