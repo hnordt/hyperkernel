@@ -2,7 +2,7 @@
   "name": "@hnordt/hyperkernel",
   "version": "0.0.1",
   "private": true,
-  "description": "Open-source primitives for building reliable, auditable, self-hosted software platforms",
+  "description": "An open-source, self-hostable application platform for building and running reliable, auditable apps that work together.",
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -14,8 +14,10 @@
   },
   "keywords": [
     "application-platform",
-    "event-sourcing",
-    "self-hosting"
+    "modular-applications",
+    "app-development",
+    "self-hosted",
+    "audit-log"
   ],
   "type": "module",
   "engines": {

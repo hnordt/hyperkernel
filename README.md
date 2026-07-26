@@ -1,10 +1,10 @@
 # Hyperkernel
 
-**Open-source primitives for building reliable, auditable, self-hosted software platforms.**
+**An open-source, self-hostable application platform for building and running reliable, auditable apps that work together.**
 
-Hyperkernel is an open-source project building a small set of production-grade primitives for developers creating platforms for themselves or for small businesses, with or without AI assistance. The goal is software that can be trusted, audited, repaired, and continuously evolved.
+Hyperkernel provides a shared kernel and workspace on which developers and organizations build modular applications. Those applications share platform contracts for identity, permissions, state, events, and audit history; together, they form a software platform tailored to their work.
 
-The project separates software into two trust zones:
+The platform separates software into two trust zones:
 
 - a small kernel whose contracts are designed to be stable, extensively tested, and reviewed by experienced humans;
 - applications, interfaces, workflows, and integrations that can evolve faster, whether built by developers, developers using AI, or AI agents operating within explicit boundaries.
