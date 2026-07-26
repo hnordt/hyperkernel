@@ -1,6 +1,6 @@
 # Hyperkernel
 
-**Open-source primitives for building reliable, self-hosted platforms with developers and AI agents.**
+**Open-source primitives for building reliable, auditable, self-hosted software platforms.**
 
 Hyperkernel is an open-source project building a small set of production-grade primitives for developers creating platforms for themselves or for small businesses, with or without AI assistance. The goal is software that can be trusted, audited, repaired, and continuously evolved.
 
