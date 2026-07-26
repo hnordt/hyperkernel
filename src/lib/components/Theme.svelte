@@ -69,6 +69,7 @@
     --surface: var(--neutral-50);
 
     --border: var(--neutral-200);
+    --border-subtle: var(--neutral-100);
     --border-strong: var(--neutral-300);
 
     --text: var(--neutral-900);
@@ -86,11 +87,12 @@
     --heading-letter-spacing: 0.0125em;
     --heading-line-height: 1.5;
 
-    --padding: var(--text-size);
-    --gap: var(--text-size);
+    --padding-subtle: var(--text-size);
+    --gap-subtle: var(--text-size);
 
-    --radius: var(--text-size);
-    --shadow: 0 2px 4px 0 hsl(0 0 0 / 0.05);
+    --radius-subtle: var(--text-size);
+
+    --shadow-subtle: 0 2px 4px 0 hsl(0 0 0 / 0.05);
 
     --min-window-block-size: calc(var(--text-size) * 16);
   }

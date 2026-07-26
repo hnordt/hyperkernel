@@ -24,9 +24,8 @@
 <style>
   section {
     background: var(--surface);
-    border: var(--border);
-    border-radius: var(--radius);
-    box-shadow: var(--shadow);
+    border-radius: var(--radius-subtle);
+    box-shadow: var(--shadow-subtle);
 
     min-block-size: var(--min-window-block-size);
     min-inline-size: calc(var(--min-window-block-size) * 1.25);
@@ -36,12 +35,12 @@
     left: 3rem;
 
     > header {
-      border-bottom: 1px solid var(--border);
-      padding: var(--padding);
+      border-bottom: 1px solid var(--border-subtle);
+      padding: var(--padding-subtle);
     }
 
     > div {
-      padding: var(--padding);
+      padding: var(--padding-subtle);
     }
   }
 </style>
