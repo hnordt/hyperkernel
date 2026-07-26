@@ -1,7 +1,0 @@
-@import "tailwindcss";
-
-@plugin "@tailwindcss/forms";
-
-@theme {
-  --font-sans: "Inter Variable", system-ui, sans-serif;
-}

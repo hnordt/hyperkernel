@@ -11,7 +11,7 @@ This file is the canonical project guidance for coding agents working in this re
 
 - **Language**: TypeScript
 - **Package Manager**: npm
-- **Add-ons**: prettier, eslint, vitest, playwright, tailwindcss, sveltekit-adapter, mcp
+- **Add-ons**: prettier, eslint, vitest, playwright, sveltekit-adapter, mcp
 
 ## Commands
 
@@ -41,9 +41,9 @@ For browser-based QA, screenshots, console checks, and visual debugging, default
 
 ## Architecture
 
-SvelteKit app with Node adapter, Svelte 5 runes mode, SQLite via the built-in `node:sqlite` module, and Tailwind CSS v4.
+SvelteKit app with Node adapter, Svelte 5 runes mode, SQLite via the built-in `node:sqlite` module, and native CSS.
 
-- **`src/routes/`** — SvelteKit file-based routes. Global styles in `layout.css` (imported by `+layout.svelte`).
+- **`src/routes/`** — SvelteKit file-based routes. Document-level styles belong in the global style block of `+layout.svelte`; page-specific styles belong in their Svelte components.
 - **`src/lib/server/db/`** — Database layer. `index.ts` exports the shared `DatabaseSync` connection. Event persistence and projections belong behind this server-only boundary.
 - **`src/lib/assets/`** — Static assets referenced in components.
 
@@ -51,7 +51,7 @@ Database URL is read from `DATABASE_URL` env var (`.env` points to `./local.db` 
 
 Database integration must use the built-in `node:sqlite` module. Keep connection creation centralized in `src/lib/server/db/index.ts`, append durable facts to the event log, and build read models through projections owned by the application database layer. Do not introduce an ORM, another SQLite client, or unrelated ad hoc database access unless the architecture is intentionally changed and documented.
 
-Tailwind v4 is configured via the Vite plugin (no `tailwind.config.js`). The `@tailwindcss/forms` plugin is applied in `layout.css`. Font is Inter (via `@fontsource-variable/inter`), set as the default in `layout.css`.
+Styling uses native CSS in scoped Svelte `<style>` blocks. Keep global CSS limited to document-level rules in the global style block of `+layout.svelte`. Font is Inter (via `@fontsource-variable/inter`), imported and set as the document default in `+layout.svelte`.
 
 Svelte 5+ and SvelteKit 2+ are required. Use Svelte 5 runes for all non-library app code, SvelteKit remote functions for server/client RPC-style flows, and avoid legacy Svelte 4 patterns unless maintaining third-party/library code.
 
@@ -78,7 +78,7 @@ Prefer small, direct, production-oriented changes. The best patch is the smalles
 
 ### Platform APIs
 
-- Prefer standard ECMAScript, Web Platform, SvelteKit, Svelte, Drizzle, and Tailwind APIs before creating project-specific utilities.
+- Prefer standard ECMAScript, Web Platform, SvelteKit, Svelte, Drizzle, and CSS APIs before creating project-specific utilities.
 - Before adding a custom utility, check whether the platform already provides the needed behavior.
 - Prefer `Intl.NumberFormat`, `Intl.DateTimeFormat`, `URL`, `URLSearchParams`, `FormData`, `structuredClone`, `crypto.randomUUID`, `Object.groupBy`, `Array.prototype.toSorted`, `Array.prototype.toSpliced`, and other standard APIs when they fit the contract.
 - Do not create helpers such as `formatNumber`, `formatCurrency`, `buildUrl`, `cloneObject`, or `generateId` if a standard API expresses the same contract clearly.
@@ -94,11 +94,9 @@ Prefer small, direct, production-oriented changes. The best patch is the smalles
 
 ## Styling
 
-Use Tailwind CSS utilities for styling by default. Avoid custom CSS in Svelte `<style>` blocks or standalone stylesheets unless Tailwind cannot express the requirement clearly or the style must live in a global/base layer, such as font imports, CSS variables, browser resets, third-party integration fixes, or reusable primitives that would be unreasonable as repeated utility classes.
+Use native CSS in scoped Svelte `<style>` blocks for component and page styling. Keep selectors local, prefer semantic class names for distinct component parts, and use CSS custom properties for values that cross component boundaries.
 
-Use `text-sm` as the default UI text size for paragraphs, field values, helper text, links, labels, checkbox/radio labels, and buttons. The exception is form input labels: use `text-base sm:text-sm` so labels are larger on mobile and compact on wider screens.
-
-When custom CSS is necessary, keep it as small and local as possible, document why Tailwind is not sufficient, and preserve the existing Tailwind v4 setup in `src/routes/layout.css`.
+Keep global CSS limited to document-level concerns such as fonts, box sizing, and browser resets. Add those rules to the global style block in `src/routes/+layout.svelte`; do not add component-specific styles there.
 
 ## Schema Validation
 
@@ -117,11 +115,11 @@ Purposefully avoid headless UI libraries. Build interactive primitives with mode
 
 Write commit messages as a single sentence summarizing the changes.
 
-Example: `Document Tailwind styling guidance for agents`
+Example: `Document native CSS styling guidance for agents`
 
 ## Path Patterns
 
-- Use `./` for specific local file paths in config files, such as `extends: "./vite.config.ts"` or `"tailwindStylesheet": "./src/routes/layout.css"`.
+- Use `./` for specific local file paths in config files, such as `extends: "./vite.config.ts"`.
 - Omit `./` for glob patterns, such as `include: ["src/**/*.test.ts"]` or `exclude: ["src/lib/server/**"]`.
 - In `.gitignore`, use a leading `/` for repository-root anchored paths, such as `/build` or `/node_modules`.
 

@@ -4,18 +4,15 @@
 
   import favicon from "$lib/assets/favicon.svg";
 
-  import "./layout.css";
+  import Theme from "$lib/components/Theme.svelte";
 
   let { children } = $props();
 </script>
 
 <svelte:head>
-  <title>Hyperkernel</title>
-  <meta
-    name="description"
-    content="A self-hostable, extensible business platform for building and running modular applications in modern web browsers."
-  />
   <link rel="icon" href={favicon} />
 </svelte:head>
 
-{@render children()}
+<Theme>
+  {@render children()}
+</Theme>
