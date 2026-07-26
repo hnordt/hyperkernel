@@ -9,6 +9,9 @@
     font-family: var(--font-family);
     font-size: var(--text-size);
     font-weight: var(--text-weight);
+
     text-box: trim-both cap alphabetic;
+
+    margin: 0;
   }
 </style>

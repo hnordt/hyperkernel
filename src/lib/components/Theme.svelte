@@ -1,22 +1,11 @@
+<script lang="ts">
+  let { children } = $props();
+</script>
+
+{@render children()}
+
 <style>
-  /* Make declared dimensions include padding and borders everywhere */
-  :global(*, *::before, *::after) {
-    box-sizing: border-box;
-  }
-
-  /* Remove default margins while preserving dialog positioning */
-  :global(*:not(dialog)) {
-    margin: 0;
-  }
-
-  /* Improve text rendering on macOS */
-  :global(html) {
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-  }
-
-  /* Define primitive tokens */
-  :global(:root) {
+  :root {
     --black: #000;
     --white: #fff;
 
@@ -55,10 +44,7 @@
     --red-800: oklch(44.4% 0.177 26.899);
     --red-900: oklch(39.6% 0.141 25.723);
     --red-950: oklch(25.8% 0.092 26.042);
-  }
 
-  /* Define application tokens */
-  :global(:root) {
     --accent: var(--blue-500);
     --accent-hover: var(--blue-400);
 

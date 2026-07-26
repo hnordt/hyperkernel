@@ -3,14 +3,30 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
+
     <meta
       name="viewport"
       content="width=device-width, initial-scale=1, viewport-fit=cover"
     />
+
+    <style>
+      html {
+        overflow: hidden; /* lock document scrolling */
+      }
+
+      body {
+        margin: 0;
+
+        > div {
+          display: contents;
+        }
+      }
+    </style>
+
     %sveltekit.head%
   </head>
 
   <body data-sveltekit-preload-data="hover">
-    <div style="display: contents">%sveltekit.body%</div>
+    <div>%sveltekit.body%</div>
   </body>
 </html>

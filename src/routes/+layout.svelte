@@ -13,6 +13,6 @@
   <link rel="icon" href={favicon} />
 </svelte:head>
 
-<Theme />
-
-{@render children()}
+<Theme>
+  {@render children()}
+</Theme>

@@ -2,19 +2,25 @@
   let { children } = $props();
 </script>
 
-<main>
-  <div>
+<div>
+  <main>
     {@render children()}
-  </div>
-</main>
+  </main>
+</div>
 
 <style>
-  /* Lock document scrolling */
-  :global(html) {
-    overflow: hidden;
+  div :global {
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
   }
 
-  main {
+  div {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+
     background: var(--canvas);
     color: var(--text);
 
@@ -24,7 +30,7 @@
 
     height: 100dvh;
 
-    > div {
+    > main {
       position: relative;
 
       height: 100%;

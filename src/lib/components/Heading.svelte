@@ -18,6 +18,9 @@
     font-family: var(--font-family);
     font-size: var(--heading-size);
     font-weight: var(--heading-weight);
+
     text-box: trim-both cap alphabetic;
+
+    margin: 0;
   }
 </style>
