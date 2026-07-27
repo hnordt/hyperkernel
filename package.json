@@ -2,7 +2,7 @@
   "name": "@hnordt/hyperkernel",
   "version": "0.0.1",
   "private": true,
-  "description": "Open-source primitives for building reliable, auditable, self-hosted software platforms",
+  "description": "Open-source primitives for building reliable, auditable, self-hosted software platforms.",
   "license": "MIT",
   "repository": {
     "type": "git",
