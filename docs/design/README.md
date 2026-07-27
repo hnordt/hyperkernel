@@ -12,9 +12,10 @@ code and tests.
 
 ## Records
 
-| Record                                                         | Status |
-| -------------------------------------------------------------- | ------ |
-| [0001: Event schema evolution](0001-event-schema-evolution.md) | Draft  |
+| Record                                                                                       | Status      |
+| -------------------------------------------------------------------------------------------- | ----------- |
+| [0001: Event schema evolution](0001-event-schema-evolution.md)                               | Draft       |
+| [0002: Event-sourced persistence with SQLite](0002-event-sourced-persistence-with-sqlite.md) | Development |
 
 ## Authority
 
