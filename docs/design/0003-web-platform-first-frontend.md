@@ -10,14 +10,18 @@
 ## Summary
 
 Hyperkernel will use HTML, CSS, ECMAScript, and browser APIs directly whenever
-they satisfy the required contract. It will not use Tailwind CSS or a headless
-UI library. The project will own the source, behavior, and styling of its core
-interface primitives.
+they satisfy the required contract. The project will own the source, behavior,
+and styling of its core interface primitives.
 
-Svelte and SvelteKit remain deliberate exceptions. They provide capabilities
-that the web platform does not yet combine into an adequate application
-component and delivery model. Their use should enhance platform primitives
-rather than replace them with project-specific equivalents.
+Svelte and SvelteKit remain deliberate frontend exceptions. They provide
+capabilities that the web platform does not yet combine into an adequate
+application component and delivery model. Their use should enhance platform
+primitives rather than replace them with project-specific equivalents.
+
+Zod is another accepted dependency. Neither Node.js nor the web platform
+provides an adequate general-purpose schema validation mechanism, while Zod
+provides a strong API for declaring, composing, validating, and inferring typed
+schemas.
 
 ## Problem
 
@@ -37,27 +41,30 @@ own the vocabulary or behavior expressed throughout Hyperkernel's source and
 make replacement require a broad rewrite.
 
 Hyperkernel needs a clear boundary between capabilities it should inherit from
-the web platform, capabilities it should own, and gaps for which a framework is
+the platform, capabilities it should own, and gaps for which a dependency is
 still justified.
 
 ## Invariants
 
-1. Standards-based HTML, CSS, ECMAScript, and browser APIs are the default
-   implementation surface.
+1. Standards-based HTML, CSS, ECMAScript, Node.js, and browser APIs are the
+   default implementation surface.
 2. A dependency must provide a material capability, not only an alternative
    vocabulary for a capability the platform already provides adequately.
 3. Hyperkernel owns the source and observable behavior of its core interface
    primitives.
 4. Browser behavior is preserved unless a documented application requirement
    justifies changing it.
-5. Tailwind CSS and headless UI libraries are not part of the frontend stack.
-   Reversing either decision requires a new design record.
+5. Headless UI libraries are not part of the frontend stack. Reversing this
+   decision requires a new design record.
 6. Platform-first implementation does not weaken accessibility requirements.
    Custom interactions must retain correct semantics, keyboard operation, focus
    behavior, and assistive-technology support.
-7. Framework-specific contracts do not define durable domain data, event
-   schemas, or public application boundaries.
-8. Reducing dependencies lowers exposure to dependency compromise and
+7. Svelte- and SvelteKit-specific state and APIs do not define durable domain
+   data or public application boundaries.
+8. Zod may implement a validation contract, but its internal representation is
+   not a durable wire or storage format. Zod upgrades must not silently change
+   the accepted meaning of a versioned schema.
+9. Reducing dependencies lowers exposure to dependency compromise and
    unreviewed changes, but is not treated as a complete supply-chain security
    strategy.
 
@@ -77,19 +84,6 @@ interface requires a different explicit contract.
 This keeps the primary implementation language aligned with standards developed
 and implemented independently of Hyperkernel's current framework choices. It
 also keeps behavior inspectable in the repository and browser developer tools.
-
-### Do not use Tailwind CSS
-
-Tailwind produces standard CSS, but application source becomes coupled to
-Tailwind's utility vocabulary, compiler, configuration, and upgrade path.
-Replacing it requires translating framework-specific markup throughout the
-interface.
-
-Native CSS already provides the selectors, scoping, custom properties, layout,
-color, responsive behavior, and composition mechanisms Hyperkernel needs.
-Using it directly removes an unnecessary abstraction and build dependency while
-allowing the project to adopt new platform capabilities without waiting for a
-framework-specific representation.
 
 ### Do not use a headless UI library
 
@@ -134,20 +128,51 @@ SvelteKit provides this application shell and integrates the required build
 tooling with Svelte. The project accepts this dependency while keeping domain
 and persistence contracts independent of SvelteKit.
 
+### Use Zod
+
+Node.js and the web platform provide language primitives for inspecting values,
+and browsers provide constraint validation for HTML forms. Neither provides a
+general-purpose schema system that combines runtime parsing and validation,
+composable schemas, structured errors, transformations, and TypeScript type
+inference.
+
+Zod provides this missing capability through a concise and strongly typed API.
+Hyperkernel will use it primarily at server-side trust boundaries, including
+commands, persisted payloads, configuration, and data received from external
+systems.
+
+A Zod schema is an implementation of a Hyperkernel contract rather than the
+identity of that contract. Durable event compatibility remains governed by the
+explicit event type and schema version defined in
+[0001: Event schema evolution](0001-event-schema-evolution.md).
+
+Regular Zod can increase a browser bundle because its method-oriented API is not
+fully tree-shakable. Most initial Zod usage will remain on the server, where it
+does not affect the client bundle. Client bundle minimization is also not a
+primary project goal at this stage, so regular Zod remains acceptable when its
+API provides the clearest implementation.
+
+Client bundle size is nevertheless a known concern. Browser code may use Zod
+Mini through `zod/mini` when its functional API preserves the required contract
+with acceptable ergonomics and produces a meaningfully smaller bundle. The
+project will measure actual output before standardizing either form for client
+code.
+
 ### Review future exceptions explicitly
 
-A future proposal for a frontend abstraction must identify:
+A future proposal for an abstraction must identify:
 
 - the missing platform capability;
 - the observable behavior the dependency would own;
-- its accessibility and browser-compatibility contract;
+- its compatibility contract;
 - its transitive dependency and build-time impact;
 - the migration path if the dependency is abandoned;
 - why a local implementation would create greater maintenance or operational
   risk.
 
-Convenience or implementation speed alone is not sufficient for changing this
-decision.
+A user-interface dependency must additionally identify its accessibility and
+browser-compatibility contract. Convenience or implementation speed alone is
+not sufficient for changing this decision.
 
 ## Security boundary
 
@@ -156,11 +181,11 @@ code Hyperkernel must trust. Removing styling and component-library dependency
 trees reduces opportunities for compromised packages, malicious install or
 build behavior, and vulnerable transitive code.
 
-The web platform is not trusted merely because it is native, and local code is
-not secure merely because Hyperkernel owns it. Browser behavior, Svelte,
-SvelteKit, build tools, and remaining dependencies stay inside the threat model.
-The project must still pin and review dependencies, protect the release process,
-and test the resulting application.
+The platforms are not trusted merely because they are native, and local code is
+not secure merely because Hyperkernel owns it. Browser and Node.js behavior,
+Svelte, SvelteKit, Zod, build tools, and remaining dependencies stay inside the
+threat model. The project must still pin and review dependencies, protect the
+release process, and test the resulting application.
 
 Dependency reduction is therefore a reduction in trusted surface, not proof of
 security.
@@ -243,6 +268,16 @@ This solution is rejected because the maintenance and operational cost would be
 high while providing little product value. SvelteKit is the accepted
 infrastructure dependency for this boundary.
 
+### Hand-written schema validation
+
+Hyperkernel could validate every boundary through local predicates and
+hand-written error construction.
+
+This solution is rejected as the default because validation, composition,
+transformations, error reporting, and TypeScript types could drift independently
+at every boundary. Zod provides the missing shared mechanism without requiring
+Hyperkernel to build and maintain its own schema library.
+
 ## Consequences
 
 ### Gains
@@ -256,6 +291,8 @@ infrastructure dependency for this boundary.
 - Native CSS and browser capabilities can be adopted directly.
 - Framework dependencies are concentrated at boundaries where the platform
   still lacks an adequate integrated solution.
+- Zod provides one composable validation model with runtime enforcement and
+  TypeScript inference across trust boundaries.
 
 ### Costs and limitations
 
@@ -266,8 +303,10 @@ infrastructure dependency for this boundary.
   delivery.
 - Contributors need strong knowledge of HTML, CSS, accessibility, and browser
   behavior.
-- Svelte and SvelteKit still create framework and toolchain lock-in and remain
-  part of the dependency threat model.
+- Svelte, SvelteKit, and Zod create framework, toolchain, and validation-library
+  coupling and remain part of the dependency threat model.
+- Regular Zod may add avoidable client weight, while Zod Mini trades some API
+  ergonomics for better tree-shaking.
 - Some native capabilities may require progressive enhancement or a temporary
   local fallback while browser support converges.
 
@@ -275,26 +314,32 @@ infrastructure dependency for this boundary.
 
 This record may advance to Evaluation when:
 
-- representative interface primitives are implemented without Tailwind CSS or
-  a headless UI library;
+- representative interface primitives are implemented without a headless UI
+  library;
 - native and intentionally customized behaviors are covered by interaction
   tests;
 - keyboard, focus, semantic, and assistive-technology expectations are
   documented for complex controls;
 - supported browsers pass the relevant interface and end-to-end tests;
-- Svelte-specific state remains outside durable and public contracts.
+- Svelte-specific state remains outside durable and public contracts;
+- server and client validation boundaries are documented, and client-side Zod
+  usage is visible in bundle measurements;
+- supported Zod upgrades preserve every durable schema compatibility contract.
 
 It may advance to Stable after the approach supports representative Hyperkernel
-applications and survives browser, Svelte, and SvelteKit upgrades without
-requiring a rewrite of core interface contracts.
+applications and survives browser, Node.js, Svelte, SvelteKit, and Zod upgrades
+without requiring a rewrite of core interface or validation contracts.
 
 ## References
 
 - [Hyperkernel public architecture](../../README.md)
 - [Hyperkernel engineering contracts](../../AGENTS.md)
+- [0001: Event schema evolution](0001-event-schema-evolution.md)
 - [MDN: Web components](https://developer.mozilla.org/en-US/docs/Web/API/Web_components)
 - [Svelte: What are runes?](https://svelte.dev/docs/svelte/what-are-runes)
 - [SvelteKit: Introduction](https://svelte.dev/docs/kit/introduction)
+- [Zod](https://zod.dev/packages/zod)
+- [Zod Mini](https://zod.dev/packages/mini)
 
 ## Status history
 
