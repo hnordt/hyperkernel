@@ -18,6 +18,7 @@ code and tests.
 | [0002: Event-sourced persistence with SQLite](0002-event-sourced-persistence-with-sqlite.md) | Development |
 | [0003: Web-platform-first frontend](0003-web-platform-first-frontend.md)                     | Development |
 | [0004: Interface design philosophy](0004-interface-design-philosophy.md)                     | Development |
+| [0005: Error handling and recovery](0005-error-handling-and-recovery.md)                     | Draft       |
 
 ## Authority
 
