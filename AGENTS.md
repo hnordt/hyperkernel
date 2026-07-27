@@ -164,6 +164,7 @@ Hyperkernel currently requires Node.js 24 or later and npm 11 or later.
 - `src/lib/server/db/index.ts` owns the shared `DatabaseSync` connection.
 - `src/lib/server/` is server-only and must never be imported by client code.
 - `src/lib/components/` contains reusable interface components.
+- `docs/design/` contains numbered design records for significant contracts and decisions.
 - `docs/spikes/` contains isolated architecture experiments. Spikes are not production modules, supported APIs, or proof that a contract is implemented.
 
 Keep database connection creation centralized in `src/lib/server/db/index.ts`. Use the built-in `node:sqlite` module. Do not introduce an ORM, another SQLite client, a second ad hoc connection, or direct database access outside the server boundary unless an intentional architecture change is documented and approved.
