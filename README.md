@@ -1,10 +1,13 @@
 # Hyperkernel
 
-**Open-source primitives for building reliable, auditable, self-hosted software platforms.**
+> [!NOTE]
+> Hyperkernel is currently in the design phase. The repository contains an early SvelteKit shell and a centralized SQLite connection, but almost none of the platform described here is implemented; the first version is under active development. Until that version is stable, this document describes the intended architecture. It will then be revised to reflect the implemented system.
 
-Hyperkernel is an open-source project building a small set of production-grade primitives for developers creating platforms for themselves or for small businesses, with or without AI assistance. The goal is software that can be trusted, audited, repaired, and continuously evolved.
+**An open-source project building a self-hostable application platform for reliable, auditable apps that work together.**
 
-The project separates software into two trust zones:
+Hyperkernel is building a shared kernel and workspace where developers and organizations can build and run modular applications. The platform is designed to give those applications shared contracts for identity, permissions, state, events, and audit history; together, they can form a software platform tailored to the work they support.
+
+The architecture separates software into two trust zones:
 
 - a small kernel whose contracts are designed to be stable, extensively tested, and reviewed by experienced humans;
 - applications, interfaces, workflows, and integrations that can evolve faster, whether built by developers, developers using AI, or AI agents operating within explicit boundaries.
@@ -113,9 +116,9 @@ Examples include:
 - a business operations environment for an independent developer or small company;
 - a personal work and routine-management environment for developers;
 - auditable workflows in which people and external AI agents collaborate;
-- custom self-hosted platforms composed from shared kernel primitives.
+- a tailored, self-hosted suite of modular applications intended to run on Hyperkernel.
 
-These are examples, not hard-coded products. Hyperkernel provides the foundation; applications provide the domain.
+These are examples, not hard-coded products. Hyperkernel is building the application platform; applications provide the domain.
 
 ## Status
 
@@ -178,7 +181,7 @@ npm start
 
 ## Contributing
 
-Read [CONTRIBUTING.md](CONTRIBUTING.md) before proposing or implementing a change. Security vulnerabilities must be reported privately according to [SECURITY.md](SECURITY.md). Participation in project spaces is governed by the [Code of Conduct](CODE_OF_CONDUCT.md).
+Read [CONTRIBUTING.md](CONTRIBUTING.md) before proposing or implementing a change. It includes the human and AI development workflow for authoring, disclosure, review, approval, and merge responsibilities. Security vulnerabilities must be reported privately according to [SECURITY.md](SECURITY.md). Participation in project spaces is governed by the [Code of Conduct](CODE_OF_CONDUCT.md).
 
 Kernel changes require a higher evidence and review bar than application or interface changes. AI-generated contributions are welcome, but critical contracts must be understood and approved by experienced human maintainers.
 

@@ -2,11 +2,14 @@
 
 This file is the canonical engineering guidance for coding agents working in this repository. `README.md` defines the project mission and public architecture; this file turns that architecture into implementation rules.
 
+Agents contributing repository changes must also follow the human and AI
+development policy in `CONTRIBUTING.md`.
+
 When older documentation, an experiment, or a spike conflicts with these files, `README.md` and `AGENTS.md` take precedence. Do not describe a proposed contract as implemented.
 
 ## Mission
 
-Hyperkernel is building a small, highly trusted kernel for systems whose applications, interfaces, workflows, and integrations may evolve quickly.
+Hyperkernel is building a self-hostable application platform around a small, highly trusted kernel. It is intended to let developers and organizations build and run modular applications whose shared contracts allow them to form a software platform tailored to the work they support.
 
 Optimize kernel work for correctness, auditability, deterministic recovery, security, and long-term compatibility. Optimize work outside the kernel for safe iteration without allowing it to bypass kernel contracts.
 
@@ -21,6 +24,21 @@ Classify every meaningful change before implementing it:
 An extension crosses the kernel review boundary when it can bypass constrained APIs, participate in the authoritative write transaction, enforce platform authorization, or compromise platform-wide integrity, replay, compatibility, or recovery.
 
 Kernel changes require the strongest verification and approval by an experienced human maintainer. AI may author or review a kernel patch, but agent-only review never satisfies the human-review requirement.
+
+## Pull requests with material AI involvement
+
+When AI materially creates or transforms repository content, the pull request
+description must include:
+
+- the tool or agent used, when known;
+- whether the work was AI-assisted or autonomously agent-authored;
+- the change classification: Kernel, Extension, or Experience;
+- the verification performed;
+- unresolved uncertainty, failed checks, and pending security, compatibility,
+  or recovery risks.
+
+Follow `CONTRIBUTING.md` for the complete policy. Disclosure and agent review do
+not replace required human review or approval.
 
 ## Canonical data flow
 
