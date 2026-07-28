@@ -14,10 +14,10 @@ a database and returns the underlying `DatabaseSync` instance.
 
 ## Problem and invariants
 
-The SvelteKit prototype currently owns a single server-only SQLite connection
-and its baseline pragmas. That infrastructure must become reusable without
-making the kernel depend on SvelteKit or allowing SQLite to be presented as a
-database-agnostic contract.
+The SvelteKit prototype at `apps/playground` owns a single server-only SQLite
+connection and its baseline pragmas. That infrastructure must become reusable
+without making the kernel depend on SvelteKit or allowing SQLite to be
+presented as a database-agnostic contract.
 
 - The package is Node-only and uses the built-in `node:sqlite` module.
 - `openDatabase` opens an existing database or lets SQLite create a missing

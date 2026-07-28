@@ -188,26 +188,39 @@ Hyperkernel currently requires Node.js 24 or later and npm 11 or later.
 
 ## Repository boundaries
 
-- `src/routes/` contains SvelteKit routes and transport/UI entry points.
-- `src/lib/server/db/index.ts` owns the shared `DatabaseSync` connection.
-- `src/lib/server/` is server-only and must never be imported by client code.
+- `apps/playground/` contains the private example application that developers
+  use to learn and experiment with Hyperkernel.
+- `apps/playground/src/routes/` contains SvelteKit routes and transport/UI entry
+  points.
+- `apps/playground/src/lib/server/db/index.ts` owns the shared `DatabaseSync`
+  connection for the playground.
+- `apps/playground/src/lib/server/` is server-only and must never be imported by
+  client code.
 - `packages/ui/src/` contains reusable interface components exported through
   `@hyperkernel/ui`.
 - `docs/adr/` contains architecture decision records for repository-wide architecture and governance definitions.
 - `docs/design/` contains numbered design records for significant contracts and decisions.
 - `docs/spikes/` contains isolated architecture experiments. Spikes are not production modules, supported APIs, or proof that a contract is implemented.
 
-Keep database connection creation centralized in `src/lib/server/db/index.ts`. Use the built-in `node:sqlite` module. Do not introduce an ORM, another SQLite client, a second ad hoc connection, or direct database access outside the server boundary unless an intentional architecture change is documented and approved.
+Keep database connection creation centralized in
+`apps/playground/src/lib/server/db/index.ts`. Use the built-in `node:sqlite`
+module. Do not introduce an ORM, another SQLite client, a second ad hoc
+connection, or direct database access outside the server boundary unless an
+intentional architecture change is documented and approved.
 
 Framework transports must be adapters around the command/query contracts. Do not make the kernel depend on SvelteKit request objects, remote-function internals, or UI component state.
 
 ## Svelte and interface guidance
 
 - Use Svelte 5 runes for application code.
-- Experimental SvelteKit remote-function support is enabled in `vite.config.ts`; it may be used for RPC-style flows, but authoritative command, event, and projection contracts must remain framework-independent.
+- Experimental SvelteKit remote-function support is enabled in
+  `apps/playground/vite.config.ts`; it may be used for RPC-style flows, but
+  authoritative command, event, and projection contracts must remain
+  framework-independent.
 - Use native CSS in scoped Svelte `<style>` blocks for component and page styling.
 - Keep the bootstrap document reset in `src/app.html` minimal. Put other document-level rules in the root layout with `:global`; keep theme tokens owned by the theme boundary.
-- Inter is imported in `src/routes/+layout.svelte`. Reuse the existing font token rather than adding component-specific font stacks.
+- Inter is imported in `apps/playground/src/routes/+layout.svelte`. Reuse the
+  existing font token rather than adding component-specific font stacks.
 - Prefer modern HTML and Web Platform primitives such as `<dialog>`, the Popover API, `<details>`, native form controls, and the Clipboard API. Do not introduce a headless UI library without an explicit architecture decision.
 - Preserve native keyboard, focus, and accessibility semantics.
 - Treat excellent developer experience, a friendly user experience, and persistent multitasking as product requirements.

@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "workspaces": [
+    "apps/*",
     "packages/*"
   ],
   "description": "A self-hostable platform for building connected, reliable, and auditable applications.",
@@ -27,23 +28,17 @@
     "npm": ">=11"
   },
   "scripts": {
-    "prepare": "svelte-kit sync && husky",
-    "dev": "vite dev",
-    "build": "vite build",
-    "preview": "vite preview",
-    "start": "node --env-file-if-exists=.env ./build",
-    "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
+    "prepare": "npm run prepare --workspace @hyperkernel/playground && husky",
+    "dev": "npm run dev --workspace @hyperkernel/playground",
+    "build": "npm run build --workspace @hyperkernel/playground",
+    "preview": "npm run preview --workspace @hyperkernel/playground",
+    "start": "npm run start --workspace @hyperkernel/playground",
+    "check": "npm run check --workspace @hyperkernel/playground",
     "lint": "prettier --check . && eslint .",
     "format": "prettier --write .",
     "test": "npm run test:unit -- --run && npm run test:e2e",
-    "test:unit": "vitest",
-    "test:e2e": "playwright test"
-  },
-  "dependencies": {
-    "@fontsource-variable/inter": "^5.3.0",
-    "@hyperkernel/sqlite": "^0.0.1",
-    "@hyperkernel/ui": "^0.0.1",
-    "zod": "^4.4.3"
+    "test:unit": "npm run test:unit --workspace @hyperkernel/playground --",
+    "test:e2e": "npm run test:e2e --workspace @hyperkernel/playground --"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

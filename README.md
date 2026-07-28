@@ -3,7 +3,7 @@
 Hyperkernel is building a self-hostable platform for connected applications that developers can inspect, trust, and operate themselves. It is designed to provide shared primitives for identity, data, permissions, and app-to-app communication, so independently developed applications can work together without giving up reliability, auditability, or control.
 
 > [!NOTE]
-> Hyperkernel is currently in the design phase. The repository contains an early SvelteKit shell and a centralized SQLite connection, but almost none of the platform described here is implemented; the first version is under active development. Until that version is stable, this document describes the intended architecture. It will then be revised to reflect the implemented system.
+> Hyperkernel is currently in the design phase. The repository contains an early SvelteKit example application and a centralized SQLite connection, but almost none of the platform described here is implemented; the first version is under active development. Until that version is stable, this document describes the intended architecture. It will then be revised to reflect the implemented system.
 
 The architecture separates software into two trust zones:
 
@@ -124,12 +124,20 @@ Hyperkernel is an early architecture prototype. This document defines the target
 
 The repository currently contains:
 
-- an early SvelteKit application shell with a Node.js adapter;
+- an early SvelteKit example application under `apps/playground` with a Node.js
+  adapter;
 - a centralized server-only SQLite connection using the built-in `node:sqlite` module;
 - formatting, type-checking, unit-test, browser-test, build, and CI tooling;
 - an isolated event-sourcing and projection spike under `docs/spikes/`.
 
 Commands, the production event store, event versioning, replay, projection rebuilds, time travel, permissions, the public SDK, persistent multitasking, and external agent execution are not implemented yet.
+
+### Playground
+
+`apps/playground` is the example application for developers to learn how
+Hyperkernel packages fit together and to experiment with using the platform.
+It is a private npm workspace, not a production-ready application or a
+supported public package.
 
 ## First milestone
 
@@ -150,7 +158,7 @@ Hyperkernel requires Node.js 24 or later and npm 11 or later.
 
 ```sh
 npm ci
-cp .env.example .env
+cp apps/playground/.env.example apps/playground/.env
 npm run dev
 ```
 
@@ -175,7 +183,10 @@ npm run build
 npm start
 ```
 
-`DATABASE_URL` configures the SQLite connection path. The repository does not yet contain a production event schema, migrations, backup and restore guarantees, or an upgrade contract.
+`DATABASE_URL` configures the SQLite connection path relative to
+`apps/playground` unless it is absolute. The repository does not yet contain a
+production event schema, migrations, backup and restore guarantees, or an
+upgrade contract.
 
 ## Contributing
 

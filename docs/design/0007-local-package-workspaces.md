@@ -14,7 +14,7 @@ their package names locally before any publication to npm.
 
 ## Problem and invariants
 
-The current repository is one SvelteKit application. It needs an incremental
+The repository began as one root SvelteKit application. It needs an incremental
 path toward a reusable kernel and UI packages without duplicating development
 tooling or making the kernel depend on SvelteKit.
 
@@ -28,7 +28,7 @@ tooling or making the kernel depend on SvelteKit.
 ## Decision
 
 The repository root is a private npm workspace coordinator named
-`hyperkernel-workspace`. It declares `packages/*` as workspaces.
+`hyperkernel-workspace`. It declares `apps/*` and `packages/*` as workspaces.
 
 The initial workspaces were:
 
@@ -46,9 +46,11 @@ A subsequent Experience-layer migration adds `packages/ui`, named
 the root application's `src/lib/components` directory and exposes them through
 one package entry point.
 
-The existing root SvelteKit application stays in place for now. Moving it under
-`apps/` remains a later migration and is not a prerequisite for validating the
-workspace boundaries.
+The SvelteKit application now lives at `apps/playground` and is named
+`@hyperkernel/playground`. It is the private example application developers use
+to learn how the packages fit together and to experiment with Hyperkernel. The
+repository-root scripts delegate application commands to this workspace so the
+existing development workflow remains available.
 
 ## Alternatives considered
 
@@ -74,21 +76,23 @@ keeping the prototype changes atomic and easy to inspect.
 production API in this step. `@hyperkernel/sqlite` is Node-only and exposes the
 low-level connection API described in
 [`0008-sqlite-connection-package.md`](0008-sqlite-connection-package.md).
-`@hyperkernel/ui` is consumed directly from source by the root application.
-A later step must select and verify distribution builds before any package can
-be published.
+`@hyperkernel/ui` is consumed directly from source by
+`@hyperkernel/playground`. A later step must select and verify distribution
+builds before any package can be published.
 
 ## Evidence required for Evaluation
 
 - npm installs the workspace successfully from the repository root.
-- The root application continues to pass its existing checks.
-- The root application resolves its workspace dependencies through their
-  package names.
+- The playground application continues to pass its existing checks through
+  repository-root commands.
+- The playground resolves its workspace dependencies through their package
+  names.
 - The SQLite connection behavior remains covered after extraction.
 
 ## Status history
 
-| Date       | Status      | Note                                              |
-| ---------- | ----------- | ------------------------------------------------- |
-| 2026-07-27 | Development | Chosen for the initial local workspace migration. |
-| 2026-07-28 | Development | Added the local UI component package boundary.    |
+| Date       | Status      | Note                                                |
+| ---------- | ----------- | --------------------------------------------------- |
+| 2026-07-27 | Development | Chosen for the initial local workspace migration.   |
+| 2026-07-28 | Development | Added the local UI component package boundary.      |
+| 2026-07-28 | Development | Moved the example application to `apps/playground`. |

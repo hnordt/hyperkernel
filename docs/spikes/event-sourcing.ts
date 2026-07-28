@@ -30,8 +30,8 @@
  *
  * This file is illustrative and is not part of Hyperkernel's production
  * database boundary. Production database access uses `node:sqlite` under
- * `src/lib/server/db`; the event-sourcing and projection contracts remain under
- * design.
+ * `apps/playground/src/lib/server/db`; the event-sourcing and projection
+ * contracts remain under design.
  */
 
 import type { SQLInputValue } from "node:sqlite";

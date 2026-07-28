@@ -38,7 +38,7 @@ export default defineConfig({
           },
           include: [
             "src/**/*.svelte.{test,spec}.ts",
-            "packages/ui/src/**/*.svelte.{test,spec}.ts",
+            "../../packages/ui/src/**/*.svelte.{test,spec}.ts",
           ],
           exclude: ["src/lib/server/**"],
         },
@@ -48,8 +48,14 @@ export default defineConfig({
         test: {
           name: "server",
           environment: "node",
-          include: ["src/**/*.{test,spec}.ts", "packages/**/*.{test,spec}.ts"],
-          exclude: ["**/*.svelte.{test,spec}.ts"],
+          include: [
+            "src/**/*.{test,spec}.ts",
+            "../../packages/**/*.{test,spec}.ts",
+          ],
+          exclude: [
+            "**/*.svelte.{test,spec}.ts",
+            "../../packages/**/*.svelte.{test,spec}.ts",
+          ],
         },
       },
     ],

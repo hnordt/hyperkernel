@@ -19,12 +19,12 @@ Hyperkernel requires Node.js 24 or later and npm 11 or later.
 
 ```sh
 npm ci
-cp .env.example .env
+cp apps/playground/.env.example apps/playground/.env
 npm run dev
 ```
 
-The default SQLite database is `./local.db`. Local database files and `.env`
-files are ignored by Git.
+The default SQLite database is `apps/playground/local.db`. Local database files
+and `.env` files are ignored by Git.
 
 ## Verification
 

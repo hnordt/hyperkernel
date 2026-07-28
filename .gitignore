@@ -11,12 +11,14 @@
 *.db
 
 # Node.js
-/node_modules
+node_modules
 
 # SvelteKit
-/.svelte-kit
-/build
+/apps/*/.svelte-kit
+/apps/*/build
 
 # Playwright
 /.playwright-mcp
-/test-results
+/apps/*/.playwright-mcp
+/apps/*/playwright-report
+/apps/*/test-results
