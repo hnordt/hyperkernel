@@ -9,6 +9,8 @@ the platform speculatively.
 - Read the current implementation and v0.1 scope in `README.md`.
 - Use the domain language in `CONTEXT.md`.
 - Follow the engineering and architecture conventions in `AGENTS.md`.
+- Follow the human and AI authoring, review, approval, and disclosure policy in
+  `AI_DEVELOPMENT.md`.
 - Open an issue before starting a large feature or changing a public contract.
 
 Security vulnerabilities must be reported privately according to `SECURITY.md`.
@@ -49,6 +51,8 @@ npm run build
 - Add tests for new behavior and regressions.
 - Update documentation when setup, behavior, or a public contract changes.
 - Preserve existing vocabulary unless a terminology change is deliberate.
+- Disclose material AI assistance or autonomous agent authorship as described
+  in `AI_DEVELOPMENT.md`.
 - Write the commit message as a single sentence summarizing the change.
 
 Generated files, local databases, credentials, and unrelated formatting changes

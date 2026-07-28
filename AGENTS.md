@@ -2,6 +2,10 @@
 
 This file is the canonical engineering guidance for coding agents working in this repository. `README.md` defines the project mission and public architecture; this file turns that architecture into implementation rules.
 
+Agents contributing repository changes must also follow `AI_DEVELOPMENT.md`,
+which defines authoring disclosure and separates agent review from accountable
+human approval and merge decisions.
+
 When older documentation, an experiment, or a spike conflicts with these files, `README.md` and `AGENTS.md` take precedence. Do not describe a proposed contract as implemented.
 
 ## Mission
