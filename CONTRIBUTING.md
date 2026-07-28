@@ -117,6 +117,12 @@ failed checks, security implications, and compatibility or recovery risks.
 Never include private reasoning, secrets, credentials, or unnecessary personal
 data as provenance or evidence.
 
+Classify the affected contract rather than the changed file type, following
+`AGENTS.md`. Documentation and design records inherit the classification of
+what they define; project-facing documentation or metadata with no Kernel or
+Extension contract impact is Experience. List every affected classification
+when a coherent change crosses boundaries.
+
 ### Review evidence and approval by change class
 
 Every review considers the diff, relevant contracts, test results, and the

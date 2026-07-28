@@ -10,6 +10,11 @@ another decision whose alternatives and long-term consequences matter. Do not
 create one for routine implementation details that are adequately explained by
 code and tests.
 
+The `Scope` field uses one or more of the canonical `Kernel`, `Extension`, and
+`Experience` classifications from `AGENTS.md`. A record inherits the
+classification of the contract it defines; `Design`, `Documentation`, and
+`Frontend` are not separate classifications.
+
 ## Records
 
 | Record                                                                                                 | Status      |
@@ -20,6 +25,7 @@ code and tests.
 | [0004: Interface design philosophy](0004-interface-design-philosophy.md)                               | Development |
 | [0005: Agent-generated application specifications](0005-agent-generated-application-specifications.md) | Draft       |
 | [0006: Error handling and recovery](0006-error-handling-and-recovery.md)                               | Draft       |
+| [0007: Change classification by affected contract](0007-change-classification-by-affected-contract.md) | Development |
 
 ## Authority
 

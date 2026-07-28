@@ -3,9 +3,9 @@
 | Field        | Value       |
 | ------------ | ----------- |
 | Status       | Development |
-| Scope        | Frontend    |
+| Scope        | Experience  |
 | Created      | 2026-07-27  |
-| Last updated | 2026-07-27  |
+| Last updated | 2026-07-28  |
 
 ## Summary
 

@@ -1,11 +1,9 @@
 # Hyperkernel
 
+Hyperkernel is building a self-hostable platform for connected applications that developers can inspect, trust, and operate themselves. It is designed to provide shared primitives for identity, data, permissions, and app-to-app communication, so independently developed applications can work together without giving up reliability, auditability, or control.
+
 > [!NOTE]
 > Hyperkernel is currently in the design phase. The repository contains an early SvelteKit shell and a centralized SQLite connection, but almost none of the platform described here is implemented; the first version is under active development. Until that version is stable, this document describes the intended architecture. It will then be revised to reflect the implemented system.
-
-**An open-source project building a self-hostable application platform for reliable, auditable apps that work together.**
-
-Hyperkernel is building a shared kernel and workspace where developers and organizations can build and run modular applications. The platform is designed to give those applications shared contracts for identity, permissions, state, events, and audit history; together, they can form a software platform tailored to the work they support.
 
 The architecture separates software into two trust zones:
 
