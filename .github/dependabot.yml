@@ -5,6 +5,7 @@ updates:
     directory: /
     schedule:
       interval: weekly
-    groups:
-      development-dependencies:
-        dependency-type: development
+    ignore:
+      - dependency-name: typescript
+        versions:
+          - ">=7"

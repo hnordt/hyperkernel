@@ -2,11 +2,14 @@
 
 This file is the canonical engineering guidance for coding agents working in this repository. `README.md` defines the project mission and public architecture; this file turns that architecture into implementation rules.
 
+Agents contributing repository changes must also follow the human and AI
+development policy in `CONTRIBUTING.md`.
+
 When older documentation, an experiment, or a spike conflicts with these files, `README.md` and `AGENTS.md` take precedence. Do not describe a proposed contract as implemented.
 
 ## Mission
 
-Hyperkernel is building a small, highly trusted kernel for systems whose applications, interfaces, workflows, and integrations may evolve quickly.
+Hyperkernel is building a self-hostable application platform around a small, highly trusted kernel. It is intended to let developers and organizations build and run modular applications whose shared contracts allow them to form a software platform tailored to the work they support.
 
 Optimize kernel work for correctness, auditability, deterministic recovery, security, and long-term compatibility. Optimize work outside the kernel for safe iteration without allowing it to bypass kernel contracts.
 
@@ -16,11 +19,36 @@ Classify every meaningful change before implementing it:
 
 - **Kernel** — authoritative persistence, command execution, authorization, event contracts, ordering, concurrency, projection runtime, checkpoints, rebuilds, replay, audit, external-effect delivery, or public SDK contracts.
 - **Extension** — domain command, event, and projection definitions, domain behavior, integrations, or agent tools built through constrained kernel APIs.
-- **Experience** — the multitasking shell, application UI, administrative UI, and developer tooling.
+- **Experience** — the multitasking shell, application UI, administrative UI, developer tooling, and developer-facing project documentation or metadata that does not define another layer's contracts.
 
 An extension crosses the kernel review boundary when it can bypass constrained APIs, participate in the authoritative write transaction, enforce platform authorization, or compromise platform-wide integrity, replay, compatibility, or recovery.
 
+Classify a change by the contract or review boundary it affects, not by its file type. Documentation, ADRs, design records, tests, migrations, and tooling inherit the classification of the behavior or contract they define or change. Purely project-facing documentation and metadata with no Kernel or Extension contract impact are Experience changes. A coherent change that crosses boundaries must list every affected classification and satisfy the strongest applicable review gate.
+
 Kernel changes require the strongest verification and approval by an experienced human maintainer. AI may author or review a kernel patch, but agent-only review never satisfies the human-review requirement.
+
+## Pull requests with material AI involvement
+
+When AI materially creates or transforms repository content, the pull request
+description must include:
+
+- the tool or agent used, when known;
+- whether the work was AI-assisted or autonomously agent-authored;
+- one or more applicable change classifications: Kernel, Extension, and/or Experience;
+- the verification performed;
+- unresolved uncertainty, failed checks, and pending security, compatibility,
+  or recovery risks.
+
+Follow `CONTRIBUTING.md` for the complete policy. Disclosure and agent review do
+not replace required human review or approval.
+
+Classify a pull request as AI-assisted or human-directed whenever a person
+defines its objectives, makes material decisions, approves its scope, or
+otherwise guides the work, including through conversation. Classify it as
+autonomously agent-authored only when the agent determines and executes the
+work without meaningful human direction or approval. Do not label
+conversational or user-directed work as autonomous merely because the agent
+performed the implementation or publication steps without intervention.
 
 ## Canonical data flow
 
@@ -164,6 +192,7 @@ Hyperkernel currently requires Node.js 24 or later and npm 11 or later.
 - `src/lib/server/db/index.ts` owns the shared `DatabaseSync` connection.
 - `src/lib/server/` is server-only and must never be imported by client code.
 - `src/lib/components/` contains reusable interface components.
+- `docs/adr/` contains architecture decision records for repository-wide architecture and governance definitions.
 - `docs/design/` contains numbered design records for significant contracts and decisions.
 - `docs/spikes/` contains isolated architecture experiments. Spikes are not production modules, supported APIs, or proof that a contract is implemented.
 
@@ -201,6 +230,7 @@ Infer TypeScript types from Zod schemas instead of duplicating manual interfaces
 - Avoid unrelated renaming, formatting, file movement, or refactoring.
 - Preserve public contracts unless the task explicitly changes them.
 - Separate verified implementation from target architecture in code comments and documentation.
+- Write all document titles and internal headings in sentence case. Preserve intentional capitalization for identifiers, acronyms, proper names, product names, and technical terms.
 
 ## Commands
 

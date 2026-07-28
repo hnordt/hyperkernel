@@ -1,10 +1,10 @@
-# Local package workspaces
+# 0007: Local package workspaces
 
-| Field  | Value                                                |
-| ------ | ---------------------------------------------------- |
-| Status | Development                                          |
-| Scope  | Repository architecture and local package boundaries |
-| Date   | 2026-07-27                                           |
+| Field  | Value              |
+| ------ | ------------------ |
+| Status | Development        |
+| Scope  | Kernel, Experience |
+| Date   | 2026-07-27         |
 
 ## Summary
 
@@ -68,7 +68,7 @@ keeping the prototype changes atomic and easy to inspect.
 `@hyperkernel/kernel` is locally addressable but intentionally exports no
 production API in this step. `@hyperkernel/sqlite` is Node-only and exposes the
 low-level connection API described in
-[`0006-sqlite-connection-package.md`](0006-sqlite-connection-package.md). A
+[`0008-sqlite-connection-package.md`](0008-sqlite-connection-package.md). A
 later step must select and verify distribution builds before either package can
 be published.
 

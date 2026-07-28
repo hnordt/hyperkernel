@@ -1,49 +1,32 @@
 # Architecture decision records
 
-An Architecture Decision Record (ADR) documents an accepted, durable decision
-that guides Hyperkernel's implementation and public contracts. An ADR explains
-what was decided, why it was chosen, and the consequences that future work must
-respect.
-
-ADRs are not exploratory design documents. A decision can later be replaced,
-but it remains accepted until a newer ADR supersedes it.
+Architecture decision records (ADRs) document repository-wide architecture and
+governance definitions and durable public-contract decisions that control how
+Hyperkernel is implemented, classified, reviewed, or maintained. Product and
+platform design records remain in [`docs/design/`](../design/README.md).
 
 ## Records
 
-| Record                                                                       | Status   |
-| ---------------------------------------------------------------------------- | -------- |
-| [0001: Path and pathname terminology](0001-path-and-pathname-terminology.md) | Accepted |
+| Record                                                                                                     | Status      |
+| ---------------------------------------------------------------------------------------------------------- | ----------- |
+| [ADR 0001: Change classification by affected contract](0001-change-classification-by-affected-contract.md) | Development |
+| [ADR 0002: Path and pathname terminology](0002-path-and-pathname-terminology.md)                           | Stable      |
 
-## Relationship to design records
+## Authority
 
-[`../design/`](../design/README.md) contains ideas that progress through
-design stages. A design that is fully approved and tested may be promoted to
-an ADR when it establishes a durable rule, boundary, or public contract.
+`README.md`, `AGENTS.md`, and `CONTRIBUTING.md` remain canonical. An ADR
+elaborates those rules but does not silently override them.
 
-The design record remains as the history and evidence for the decision. The
-resulting ADR links to that design record, and the design record links to the
-ADR. Not every completed design needs an ADR; create one only when the decision
-must guide future work beyond its original implementation.
+## Conventions
 
-An ADR may also be created directly when a small, well-understood decision does
-not need a separate design process.
+Number ADRs sequentially within this directory and use a descriptive lowercase
+filename:
 
-## Status
+```text
+0001-change-classification-by-affected-contract.md
+```
 
-| Status     | Meaning                                                            |
-| ---------- | ------------------------------------------------------------------ |
-| Accepted   | The decision is active and guides current work.                    |
-| Superseded | A newer ADR replaced the decision; retain this record for history. |
-
-## Structure
-
-Each ADR contains:
-
-1. metadata with its status and decision date;
-2. a concise summary and the problem being decided;
-3. the decision and examples or rules needed to apply it;
-4. considered alternatives and consequences;
-5. links to any originating design record or replacement ADR.
-
-Number ADRs sequentially within this directory. The number is a stable identity
-and is not reused.
+Each ADR uses the same status, scope, date, decision, alternatives,
+consequences, evaluation, and status-history conventions as the design records.
+Its `Scope` field uses one or more of the canonical `Kernel`, `Extension`, and
+`Experience` classifications from `AGENTS.md`.

@@ -9,16 +9,26 @@ Use a design record when a significant idea needs deliberate exploration before
 it becomes a durable decision. Do not create one for routine implementation
 details that are adequately explained by code and tests.
 
+The `Scope` field uses one or more of the canonical `Kernel`, `Extension`, and
+`Experience` classifications from `AGENTS.md`. A record inherits the
+classification of the contract it defines; `Design`, `Documentation`, and
+`Frontend` are not separate classifications.
+
+Repository architecture and governance definitions belong in
+[`docs/adr/`](../adr/README.md), not in this design-record collection.
+
 ## Records
 
-| Record                                                                                       | Status      |
-| -------------------------------------------------------------------------------------------- | ----------- |
-| [0001: Event schema evolution](0001-event-schema-evolution.md)                               | Draft       |
-| [0002: Event-sourced persistence with SQLite](0002-event-sourced-persistence-with-sqlite.md) | Development |
-| [0003: Web-platform-first frontend](0003-web-platform-first-frontend.md)                     | Development |
-| [0004: Interface design philosophy](0004-interface-design-philosophy.md)                     | Development |
-| [0005: Local package workspaces](0005-local-package-workspaces.md)                           | Development |
-| [0006: SQLite connection package](0006-sqlite-connection-package.md)                         | Development |
+| Record                                                                                                 | Status      |
+| ------------------------------------------------------------------------------------------------------ | ----------- |
+| [0001: Event schema evolution](0001-event-schema-evolution.md)                                         | Draft       |
+| [0002: Event-sourced persistence with SQLite](0002-event-sourced-persistence-with-sqlite.md)           | Development |
+| [0003: Web-platform-first frontend](0003-web-platform-first-frontend.md)                               | Development |
+| [0004: Interface design philosophy](0004-interface-design-philosophy.md)                               | Development |
+| [0005: Agent-generated application specifications](0005-agent-generated-application-specifications.md) | Draft       |
+| [0006: Error handling and recovery](0006-error-handling-and-recovery.md)                               | Draft       |
+| [0007: Local package workspaces](0007-local-package-workspaces.md)                                     | Development |
+| [0008: SQLite connection package](0008-sqlite-connection-package.md)                                   | Development |
 
 ## Authority
 

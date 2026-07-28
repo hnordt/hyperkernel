@@ -1,11 +1,11 @@
 # 0003: Web-platform-first frontend
 
-| Field        | Value       |
-| ------------ | ----------- |
-| Status       | Development |
-| Scope        | Frontend    |
-| Created      | 2026-07-27  |
-| Last updated | 2026-07-27  |
+| Field        | Value              |
+| ------------ | ------------------ |
+| Status       | Development        |
+| Scope        | Kernel, Experience |
+| Created      | 2026-07-27         |
+| Last updated | 2026-07-28         |
 
 ## Summary
 
@@ -249,7 +249,7 @@ those requirements.
 
 This solution is rejected as the foundation of the Hyperkernel frontend.
 
-### Custom Elements without Svelte
+### Custom elements without Svelte
 
 A framework-free component layer would minimize framework coupling and use only
 browser standards.

@@ -5,7 +5,7 @@
   "workspaces": [
     "packages/*"
   ],
-  "description": "Open-source primitives for building reliable, auditable, self-hosted software platforms.",
+  "description": "A self-hostable platform for building connected, reliable, and auditable applications.",
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -17,7 +17,8 @@
   },
   "keywords": [
     "application-platform",
-    "event-sourcing",
+    "modular-applications",
+    "app-development",
     "self-hosting"
   ],
   "type": "module",
@@ -49,19 +50,19 @@
     "@sveltejs/adapter-node": "^5.5.7",
     "@sveltejs/kit": "^2.70.1",
     "@sveltejs/vite-plugin-svelte": "^7.2.0",
-    "@types/node": "^26.1.1",
+    "@types/node": "^26.1.2",
     "@vitest/browser-playwright": "^4.1.10",
     "eslint": "^10.8.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-svelte": "^3.22.0",
-    "globals": "^17.7.0",
+    "globals": "^17.8.0",
     "husky": "^9.1.7",
     "lint-staged": "^17.2.0",
     "playwright": "^1.62.0",
     "prettier": "^3.9.6",
     "prettier-plugin-svelte": "^4.1.1",
     "svelte": "^5.56.8",
-    "svelte-check": "^4.7.3",
+    "svelte-check": "^4.7.4",
     "typescript": "^6.0.3",
     "typescript-eslint": "^8.65.0",
     "vite": "^8.1.5",

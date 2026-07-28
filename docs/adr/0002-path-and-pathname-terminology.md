@@ -1,10 +1,11 @@
-# Path and pathname terminology
+# ADR 0002: Path and pathname terminology
 
-| Field         | Value                                                |
-| ------------- | ---------------------------------------------------- |
-| Status        | Accepted                                             |
-| Scope         | Public APIs, configuration, and implementation names |
-| Decision date | 2026-07-27                                           |
+| Field        | Value                         |
+| ------------ | ----------------------------- |
+| Status       | Stable                        |
+| Scope        | Kernel, Extension, Experience |
+| Created      | 2026-07-27                    |
+| Last updated | 2026-07-27                    |
 
 ## Summary
 
@@ -85,6 +86,6 @@ knowledge. A `pathname` must never be documented as a complete URL, and a
 
 ## Status history
 
-| Date       | Status   | Note                                                   |
-| ---------- | -------- | ------------------------------------------------------ |
-| 2026-07-27 | Accepted | Global terminology chosen for current and future APIs. |
+| Date       | Status | Note                                                   |
+| ---------- | ------ | ------------------------------------------------------ |
+| 2026-07-27 | Stable | Global terminology chosen for current and future APIs. |

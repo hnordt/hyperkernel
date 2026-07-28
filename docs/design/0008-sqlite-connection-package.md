@@ -1,10 +1,10 @@
-# SQLite connection package
+# 0008: SQLite connection package
 
-| Field  | Value                         |
-| ------ | ----------------------------- |
-| Status | Development                   |
-| Scope  | SQLite infrastructure adapter |
-| Date   | 2026-07-27                    |
+| Field  | Value       |
+| ------ | ----------- |
+| Status | Development |
+| Scope  | Kernel      |
+| Date   | 2026-07-27  |
 
 ## Summary
 
