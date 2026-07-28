@@ -249,7 +249,7 @@ those requirements.
 
 This solution is rejected as the foundation of the Hyperkernel frontend.
 
-### Custom Elements without Svelte
+### Custom elements without Svelte
 
 A framework-free component layer would minimize framework coupling and use only
 browser standards.
