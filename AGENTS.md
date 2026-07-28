@@ -40,6 +40,14 @@ description must include:
 Follow `CONTRIBUTING.md` for the complete policy. Disclosure and agent review do
 not replace required human review or approval.
 
+Classify a pull request as AI-assisted or human-directed whenever a person
+defines its objectives, makes material decisions, approves its scope, or
+otherwise guides the work, including through conversation. Classify it as
+autonomously agent-authored only when the agent determines and executes the
+work without meaningful human direction or approval. Do not label
+conversational or user-directed work as autonomous merely because the agent
+performed the implementation or publication steps without intervention.
+
 ## Canonical data flow
 
 Every durable domain change follows this order:
