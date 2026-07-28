@@ -178,7 +178,7 @@ npm start
 
 ## Contributing
 
-Read [CONTRIBUTING.md](CONTRIBUTING.md) before proposing or implementing a change. The [human and AI development workflow](AI_DEVELOPMENT.md) defines authoring, disclosure, review, approval, and merge responsibilities. Security vulnerabilities must be reported privately according to [SECURITY.md](SECURITY.md). Participation in project spaces is governed by the [Code of Conduct](CODE_OF_CONDUCT.md).
+Read [CONTRIBUTING.md](CONTRIBUTING.md) before proposing or implementing a change. It includes the human and AI development workflow for authoring, disclosure, review, approval, and merge responsibilities. Security vulnerabilities must be reported privately according to [SECURITY.md](SECURITY.md). Participation in project spaces is governed by the [Code of Conduct](CODE_OF_CONDUCT.md).
 
 Kernel changes require a higher evidence and review bar than application or interface changes. AI-generated contributions are welcome, but critical contracts must be understood and approved by experienced human maintainers.
 
