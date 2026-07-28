@@ -34,7 +34,7 @@ description must include:
 
 - the tool or agent used, when known;
 - whether the work was AI-assisted or autonomously agent-authored;
-- the change classification: Kernel, Extension, or Experience;
+- one or more applicable change classifications: Kernel, Extension, and/or Experience;
 - the verification performed;
 - unresolved uncertainty, failed checks, and pending security, compatibility,
   or recovery risks.

@@ -1,11 +1,11 @@
 # 0003: Web-platform-first frontend
 
-| Field        | Value       |
-| ------------ | ----------- |
-| Status       | Development |
-| Scope        | Experience  |
-| Created      | 2026-07-27  |
-| Last updated | 2026-07-28  |
+| Field        | Value              |
+| ------------ | ------------------ |
+| Status       | Development        |
+| Scope        | Kernel, Experience |
+| Created      | 2026-07-27         |
+| Last updated | 2026-07-28         |
 
 ## Summary
 
