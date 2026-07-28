@@ -23,7 +23,7 @@ Classify every meaningful change before implementing it:
 
 An extension crosses the kernel review boundary when it can bypass constrained APIs, participate in the authoritative write transaction, enforce platform authorization, or compromise platform-wide integrity, replay, compatibility, or recovery.
 
-Classify a change by the contract or review boundary it affects, not by its file type. Documentation, design records, tests, migrations, and tooling inherit the classification of the behavior or contract they define or change. Purely project-facing documentation and metadata with no Kernel or Extension contract impact are Experience changes. A coherent change that crosses boundaries must list every affected classification and satisfy the strongest applicable review gate.
+Classify a change by the contract or review boundary it affects, not by its file type. Documentation, ADRs, design records, tests, migrations, and tooling inherit the classification of the behavior or contract they define or change. Purely project-facing documentation and metadata with no Kernel or Extension contract impact are Experience changes. A coherent change that crosses boundaries must list every affected classification and satisfy the strongest applicable review gate.
 
 Kernel changes require the strongest verification and approval by an experienced human maintainer. AI may author or review a kernel patch, but agent-only review never satisfies the human-review requirement.
 
@@ -192,6 +192,7 @@ Hyperkernel currently requires Node.js 24 or later and npm 11 or later.
 - `src/lib/server/db/index.ts` owns the shared `DatabaseSync` connection.
 - `src/lib/server/` is server-only and must never be imported by client code.
 - `src/lib/components/` contains reusable interface components.
+- `docs/adr/` contains architecture decision records for repository-wide architecture and governance definitions.
 - `docs/design/` contains numbered design records for significant contracts and decisions.
 - `docs/spikes/` contains isolated architecture experiments. Spikes are not production modules, supported APIs, or proof that a contract is implemented.
 

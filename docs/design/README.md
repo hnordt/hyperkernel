@@ -15,6 +15,9 @@ The `Scope` field uses one or more of the canonical `Kernel`, `Extension`, and
 classification of the contract it defines; `Design`, `Documentation`, and
 `Frontend` are not separate classifications.
 
+Repository architecture and governance definitions belong in
+[`docs/adr/`](../adr/README.md), not in this design-record collection.
+
 ## Records
 
 | Record                                                                                                 | Status      |
@@ -25,7 +28,6 @@ classification of the contract it defines; `Design`, `Documentation`, and
 | [0004: Interface design philosophy](0004-interface-design-philosophy.md)                               | Development |
 | [0005: Agent-generated application specifications](0005-agent-generated-application-specifications.md) | Draft       |
 | [0006: Error handling and recovery](0006-error-handling-and-recovery.md)                               | Draft       |
-| [0007: Change classification by affected contract](0007-change-classification-by-affected-contract.md) | Development |
 
 ## Authority
 

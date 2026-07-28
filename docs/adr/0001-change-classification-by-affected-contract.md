@@ -1,4 +1,4 @@
-# 0007: Change classification by affected contract
+# ADR 0001: Change classification by affected contract
 
 | Field        | Value                         |
 | ------------ | ----------------------------- |
@@ -83,11 +83,10 @@ The `README.md` and `package.json` positioning change is Experience. It improves
 developer-facing project documentation and metadata without changing a Kernel
 or Extension contract.
 
-This design record itself spans Kernel, Extension, and Experience because it
-defines how changes are assigned to all three review boundaries. Its Kernel
-scope means review of this record must satisfy the strongest applicable gate;
-the record does not claim that automated validation provides the required human
-approval.
+This ADR itself spans Kernel, Extension, and Experience because it defines how
+changes are assigned to all three review boundaries. Its Kernel scope means
+review of this ADR must satisfy the strongest applicable gate; the ADR does not
+claim that automated validation provides the required human approval.
 
 ## Considered solutions
 
@@ -184,7 +183,7 @@ or requiring recurring maintainer exceptions.
 - [Hyperkernel public architecture](../../README.md)
 - [Hyperkernel engineering contracts](../../AGENTS.md)
 - [Contributing to Hyperkernel](../../CONTRIBUTING.md)
-- [Design-record conventions](README.md)
+- [ADR conventions](README.md)
 
 ## Status history
 
