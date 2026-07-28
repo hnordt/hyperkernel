@@ -19,6 +19,7 @@ code and tests.
 | [0003: Web-platform-first frontend](0003-web-platform-first-frontend.md)                               | Development |
 | [0004: Interface design philosophy](0004-interface-design-philosophy.md)                               | Development |
 | [0005: Agent-generated application specifications](0005-agent-generated-application-specifications.md) | Draft       |
+| [0006: Error handling and recovery](0006-error-handling-and-recovery.md)                               | Draft       |
 
 ## Authority
 
