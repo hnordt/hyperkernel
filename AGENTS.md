@@ -6,7 +6,7 @@ When older documentation, an experiment, or a spike conflicts with these files, 
 
 ## Mission
 
-Hyperkernel is building a small, highly trusted kernel for systems whose applications, interfaces, workflows, and integrations may evolve quickly.
+Hyperkernel is building a self-hostable application platform around a small, highly trusted kernel. It is intended to let developers and organizations build and run modular applications whose shared contracts allow them to form a software platform tailored to the work they support.
 
 Optimize kernel work for correctness, auditability, deterministic recovery, security, and long-term compatibility. Optimize work outside the kernel for safe iteration without allowing it to bypass kernel contracts.
 
