@@ -1,4 +1,4 @@
-# 0005: Error handling and recovery
+# 0006: Error handling and recovery
 
 | Field        | Value                         |
 | ------------ | ----------------------------- |
