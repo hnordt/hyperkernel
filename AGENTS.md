@@ -218,6 +218,7 @@ Infer TypeScript types from Zod schemas instead of duplicating manual interfaces
 - Avoid unrelated renaming, formatting, file movement, or refactoring.
 - Preserve public contracts unless the task explicitly changes them.
 - Separate verified implementation from target architecture in code comments and documentation.
+- Write all document titles and internal headings in sentence case. Preserve intentional capitalization for identifiers, acronyms, proper names, product names, and technical terms.
 
 ## Commands
 
