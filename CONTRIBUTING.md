@@ -96,10 +96,13 @@ cannot present tool output or an agent review as the accountable approval.
 
 ### AI-assisted and autonomous work
 
-**AI-assisted work** is directed and inspected by a human author while it is
-being produced. **Autonomous agent work** is produced through delegated tasks
-with limited or no contemporaneous human supervision. Both are acceptable, and
-both require review proportional to risk.
+**AI-assisted or human-directed work** includes any work where a person defines
+the objectives, makes material decisions, approves the scope, or otherwise
+guides the work, including through conversation. **Autonomous agent work**
+applies only when the agent determines and executes the work without meaningful
+human direction or approval. Delegated or conversational work remains
+human-directed even when the agent completes it without contemporaneous
+supervision. Both are acceptable, and both require review proportional to risk.
 
 A pull request must disclose material AI involvement when AI generated or
 substantially transformed repository content. State whether the work was
