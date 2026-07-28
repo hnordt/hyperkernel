@@ -2,7 +2,7 @@
   "name": "@hnordt/hyperkernel",
   "version": "0.0.1",
   "private": true,
-  "description": "An open-source project building a self-hostable application platform for reliable, auditable apps that work together.",
+  "description": "A self-hostable platform for building connected, reliable, and auditable applications.",
   "license": "MIT",
   "repository": {
     "type": "git",

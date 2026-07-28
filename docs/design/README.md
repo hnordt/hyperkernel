@@ -10,6 +10,14 @@ another decision whose alternatives and long-term consequences matter. Do not
 create one for routine implementation details that are adequately explained by
 code and tests.
 
+The `Scope` field uses one or more of the canonical `Kernel`, `Extension`, and
+`Experience` classifications from `AGENTS.md`. A record inherits the
+classification of the contract it defines; `Design`, `Documentation`, and
+`Frontend` are not separate classifications.
+
+Repository architecture and governance definitions belong in
+[`docs/adr/`](../adr/README.md), not in this design-record collection.
+
 ## Records
 
 | Record                                                                                                 | Status      |

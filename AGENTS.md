@@ -19,9 +19,11 @@ Classify every meaningful change before implementing it:
 
 - **Kernel** — authoritative persistence, command execution, authorization, event contracts, ordering, concurrency, projection runtime, checkpoints, rebuilds, replay, audit, external-effect delivery, or public SDK contracts.
 - **Extension** — domain command, event, and projection definitions, domain behavior, integrations, or agent tools built through constrained kernel APIs.
-- **Experience** — the multitasking shell, application UI, administrative UI, and developer tooling.
+- **Experience** — the multitasking shell, application UI, administrative UI, developer tooling, and developer-facing project documentation or metadata that does not define another layer's contracts.
 
 An extension crosses the kernel review boundary when it can bypass constrained APIs, participate in the authoritative write transaction, enforce platform authorization, or compromise platform-wide integrity, replay, compatibility, or recovery.
+
+Classify a change by the contract or review boundary it affects, not by its file type. Documentation, ADRs, design records, tests, migrations, and tooling inherit the classification of the behavior or contract they define or change. Purely project-facing documentation and metadata with no Kernel or Extension contract impact are Experience changes. A coherent change that crosses boundaries must list every affected classification and satisfy the strongest applicable review gate.
 
 Kernel changes require the strongest verification and approval by an experienced human maintainer. AI may author or review a kernel patch, but agent-only review never satisfies the human-review requirement.
 
@@ -32,7 +34,7 @@ description must include:
 
 - the tool or agent used, when known;
 - whether the work was AI-assisted or autonomously agent-authored;
-- the change classification: Kernel, Extension, or Experience;
+- one or more applicable change classifications: Kernel, Extension, and/or Experience;
 - the verification performed;
 - unresolved uncertainty, failed checks, and pending security, compatibility,
   or recovery risks.
@@ -190,6 +192,7 @@ Hyperkernel currently requires Node.js 24 or later and npm 11 or later.
 - `src/lib/server/db/index.ts` owns the shared `DatabaseSync` connection.
 - `src/lib/server/` is server-only and must never be imported by client code.
 - `src/lib/components/` contains reusable interface components.
+- `docs/adr/` contains architecture decision records for repository-wide architecture and governance definitions.
 - `docs/design/` contains numbered design records for significant contracts and decisions.
 - `docs/spikes/` contains isolated architecture experiments. Spikes are not production modules, supported APIs, or proof that a contract is implemented.
 

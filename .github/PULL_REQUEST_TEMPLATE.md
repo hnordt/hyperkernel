@@ -17,7 +17,7 @@ Describe the checks performed, including failed checks and unverified assumption
 
 - Tool or agent:
 - Autonomy: <!-- AI-assisted or autonomously agent-authored -->
-- Classification: <!-- Kernel, Extension, or Experience -->
+- Classification: <!-- One or more of: Kernel, Extension, Experience -->
 - Unresolved uncertainty and pending risk: <!-- Include security, compatibility, and recovery risks; state "None known" when none. -->
 
 ## Scope
