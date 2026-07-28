@@ -734,6 +734,6 @@ representative applications.
 
 ## Status history
 
-| Date       | Status | Reason                                                       |
-| ---------- | ------ | ------------------------------------------------------------ |
+| Date       | Status | Reason                                                        |
+| ---------- | ------ | ------------------------------------------------------------- |
 | 2026-07-28 | Draft  | Initial protocol proposed; no implementation has been chosen. |
