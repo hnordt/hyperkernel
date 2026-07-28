@@ -197,6 +197,7 @@ Infer TypeScript types from Zod schemas instead of duplicating manual interfaces
 - Prefer domain names over generic names such as `data`, `item`, `handler`, `manager`, `helper`, or `utils`.
 - Prefer standard ECMAScript, Web Platform, Svelte, SvelteKit, and CSS APIs over project-specific wrappers.
 - Do not extract a one-use helper unless it creates a real boundary, names a domain invariant, or materially reduces complexity.
+- Do not introduce a one-use local merely to restate a short, readable expression. Keep a local when it names a domain concept or boundary, avoids repeated or side-effectful evaluation, enables type narrowing or cleanup, or materially improves readability.
 - Avoid unrelated renaming, formatting, file movement, or refactoring.
 - Preserve public contracts unless the task explicitly changes them.
 - Separate verified implementation from target architecture in code comments and documentation.

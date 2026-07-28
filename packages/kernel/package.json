@@ -1,0 +1,11 @@
+{
+  "name": "@hyperkernel/kernel",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Trusted kernel primitives for Hyperkernel applications.",
+  "license": "MIT",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  }
+}
