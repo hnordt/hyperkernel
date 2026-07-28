@@ -9,6 +9,3 @@ updates:
       - dependency-name: typescript
         versions:
           - ">=7"
-    groups:
-      development-dependencies:
-        dependency-type: development
