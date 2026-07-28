@@ -6,7 +6,7 @@ When older documentation, an experiment, or a spike conflicts with these files, 
 
 ## Mission
 
-Hyperkernel is a self-hostable application platform built around a small, highly trusted kernel. Developers and organizations build and run modular applications on Hyperkernel. Together, those applications form a software platform tailored to the work they support.
+Hyperkernel is building a self-hostable application platform around a small, highly trusted kernel. It is intended to let developers and organizations build and run modular applications whose shared contracts allow them to form a software platform tailored to the work they support.
 
 Optimize kernel work for correctness, auditability, deterministic recovery, security, and long-term compatibility. Optimize work outside the kernel for safe iteration without allowing it to bypass kernel contracts.
 
@@ -164,6 +164,7 @@ Hyperkernel currently requires Node.js 24 or later and npm 11 or later.
 - `src/lib/server/db/index.ts` owns the shared `DatabaseSync` connection.
 - `src/lib/server/` is server-only and must never be imported by client code.
 - `src/lib/components/` contains reusable interface components.
+- `docs/design/` contains numbered design records for significant contracts and decisions.
 - `docs/spikes/` contains isolated architecture experiments. Spikes are not production modules, supported APIs, or proof that a contract is implemented.
 
 Keep database connection creation centralized in `src/lib/server/db/index.ts`. Use the built-in `node:sqlite` module. Do not introduce an ORM, another SQLite client, a second ad hoc connection, or direct database access outside the server boundary unless an intentional architecture change is documented and approved.

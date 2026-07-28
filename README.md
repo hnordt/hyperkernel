@@ -1,10 +1,10 @@
 # Hyperkernel
 
-**An open-source, self-hostable application platform for building and running reliable, auditable apps that work together.**
+**An open-source project building a self-hostable application platform for reliable, auditable apps that work together.**
 
-Hyperkernel provides a shared kernel and workspace on which developers and organizations build and run modular applications. Those applications share platform contracts for identity, permissions, state, events, and audit history; together, they form a software platform tailored to the work they support.
+Hyperkernel is building a shared kernel and workspace where developers and organizations can build and run modular applications. The platform is designed to give those applications shared contracts for identity, permissions, state, events, and audit history; together, they can form a software platform tailored to the work they support.
 
-The platform separates software into two trust zones:
+The architecture separates software into two trust zones:
 
 - a small kernel whose contracts are designed to be stable, extensively tested, and reviewed by experienced humans;
 - applications, interfaces, workflows, and integrations that can evolve faster, whether built by developers, developers using AI, or AI agents operating within explicit boundaries.
@@ -113,9 +113,9 @@ Examples include:
 - a business operations environment for an independent developer or small company;
 - a personal work and routine-management environment for developers;
 - auditable workflows in which people and external AI agents collaborate;
-- a tailored, self-hosted suite of modular applications running on Hyperkernel.
+- a tailored, self-hosted suite of modular applications intended to run on Hyperkernel.
 
-These are examples, not hard-coded products. Hyperkernel provides the application platform; applications provide the domain.
+These are examples, not hard-coded products. Hyperkernel is building the application platform; applications provide the domain.
 
 ## Status
 
