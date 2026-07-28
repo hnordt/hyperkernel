@@ -1,0 +1,14 @@
+{
+  "name": "@hyperkernel/ui",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Reusable interface components for Hyperkernel applications.",
+  "license": "MIT",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "peerDependencies": {
+    "svelte": "^5.56.8"
+  }
+}

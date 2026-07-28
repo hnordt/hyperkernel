@@ -1,6 +1,6 @@
 import { DatabaseSync } from "node:sqlite";
 import { expect, test, vi } from "vitest";
-import { openDatabase } from "@hyperkernel/sqlite";
+import { openDatabase } from "./index.js";
 
 test("opens an in-memory SQLite database by default", () => {
   const warn = vi.spyOn(console, "warn").mockImplementation(() => {});

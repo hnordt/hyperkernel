@@ -3,8 +3,7 @@
   import "@fontsource-variable/inter/wght-italic.css";
 
   import favicon from "$lib/assets/favicon.svg";
-
-  import Theme from "$lib/components/Theme.svelte";
+  import { Theme } from "@hyperkernel/ui";
 
   let { children } = $props();
 </script>

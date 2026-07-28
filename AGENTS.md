@@ -191,7 +191,8 @@ Hyperkernel currently requires Node.js 24 or later and npm 11 or later.
 - `src/routes/` contains SvelteKit routes and transport/UI entry points.
 - `src/lib/server/db/index.ts` owns the shared `DatabaseSync` connection.
 - `src/lib/server/` is server-only and must never be imported by client code.
-- `src/lib/components/` contains reusable interface components.
+- `packages/ui/src/` contains reusable interface components exported through
+  `@hyperkernel/ui`.
 - `docs/adr/` contains architecture decision records for repository-wide architecture and governance definitions.
 - `docs/design/` contains numbered design records for significant contracts and decisions.
 - `docs/spikes/` contains isolated architecture experiments. Spikes are not production modules, supported APIs, or proof that a contract is implemented.

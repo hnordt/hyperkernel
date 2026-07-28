@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { Snippet } from "svelte";
 
-  import Heading from "$lib/components/Heading.svelte";
+  import Heading from "./Heading.svelte";
 
   type Props = {
     title: string;
