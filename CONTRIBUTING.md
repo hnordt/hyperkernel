@@ -102,13 +102,13 @@ agent when known, mark whether AI was used for planning, implementation, and/or
 writing tests, and select one overall usage level:
 
 - **Supervised** — AI automated manual work while a human continuously directed
-  and reviewed each step in real time, as in pair programming.
-- **Assisted** — AI performed most of the work with limited supervision, such as
-  receiving an initial prompt and occasional corrections, followed by a
-  critical human review of the completed work.
-- **Automated** — AI performed the work after an initial prompt and any
-  occasional corrections, without continuous supervision or a critical human
-  review of the completed work.
+  and reviewed each step during production, as in pair programming.
+- **Assisted** — AI performed most of the work while a human periodically
+  reviewed or corrected intermediate work during production, without
+  continuously supervising each step.
+- **Automated** — AI produced the completed work after initial instructions,
+  without human review or intervention during production. A later review of the
+  completed work does not change this level.
 
 If different parts used different levels, report the level with the greatest AI
 autonomy used materially anywhere in the pull request. For example, a pull
