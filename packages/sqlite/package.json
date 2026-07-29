@@ -5,9 +5,6 @@
   "description": "SQLite connection primitives for Hyperkernel applications.",
   "license": "MIT",
   "type": "module",
-  "engines": {
-    "node": ">=24"
-  },
   "exports": {
     ".": "./src/index.ts"
   }

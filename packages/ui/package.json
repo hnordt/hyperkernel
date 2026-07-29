@@ -5,21 +5,18 @@
   "description": "Reusable interface components for Hyperkernel applications.",
   "license": "MIT",
   "type": "module",
-  "scripts": {
-    "prepare": "svelte-kit sync || echo ''",
-    "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
-    "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch"
-  },
-  "sideEffects": [
-    "**/*.css"
-  ],
-  "svelte": "./src/lib/index.ts",
-  "types": "./src/lib/index.ts",
   "exports": {
     ".": {
       "types": "./src/lib/index.ts",
       "svelte": "./src/lib/index.ts"
     }
+  },
+  "sideEffects": [
+    "**/*.css"
+  ],
+  "scripts": {
+    "prepare": "svelte-kit sync || echo ''",
+    "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json"
   },
   "peerDependencies": {
     "svelte": "^5.56.8"
