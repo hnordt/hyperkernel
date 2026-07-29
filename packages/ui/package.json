@@ -6,22 +6,10 @@
   "license": "MIT",
   "type": "module",
   "scripts": {
-    "build": "npm run package",
     "prepare": "svelte-kit sync || echo ''",
-    "package": "svelte-kit sync && svelte-package && publint",
-    "package:watch": "svelte-kit sync && svelte-package --watch",
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
-    "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
-    "prepack": "npm run package"
+    "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch"
   },
-  "files": [
-    "dist",
-    "!dist/**/*.test.*",
-    "!dist/**/*.spec.*",
-    "src/lib",
-    "!src/lib/**/*.test.*",
-    "!src/lib/**/*.spec.*"
-  ],
   "sideEffects": [
     "**/*.css"
   ],
@@ -38,9 +26,7 @@
   },
   "devDependencies": {
     "@sveltejs/kit": "^2.70.1",
-    "@sveltejs/package": "^2.5.8",
     "@sveltejs/vite-plugin-svelte": "^7.2.0",
-    "publint": "^0.3.21",
     "svelte": "^5.56.8",
     "svelte-check": "^4.7.4",
     "typescript": "^6.0.3",
