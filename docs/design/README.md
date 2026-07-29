@@ -27,8 +27,9 @@ Repository architecture and governance definitions belong in
 | [0004: Interface design philosophy](0004-interface-design-philosophy.md)                               | Development |
 | [0005: Agent-generated application specifications](0005-agent-generated-application-specifications.md) | Draft       |
 | [0006: Error handling and recovery](0006-error-handling-and-recovery.md)                               | Draft       |
-| [0007: Local package workspaces](0007-local-package-workspaces.md)                                     | Development |
-| [0008: SQLite connection package](0008-sqlite-connection-package.md)                                   | Development |
+| [0007: Managed filesystems](0007-managed-filesystems.md)                                               | Draft       |
+| [0008: Local package workspaces](0008-local-package-workspaces.md)                                     | Development |
+| [0009: SQLite connection package](0009-sqlite-connection-package.md)                                   | Development |
 
 ## Authority
 

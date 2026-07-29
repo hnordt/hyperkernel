@@ -1,4 +1,4 @@
-# 0007: Local package workspaces
+# 0008: Local package workspaces
 
 | Field  | Value              |
 | ------ | ------------------ |
@@ -75,7 +75,7 @@ keeping the prototype changes atomic and easy to inspect.
 `@hyperkernel/kernel` is locally addressable but intentionally exports no
 production API in this step. `@hyperkernel/sqlite` is Node-only and exposes the
 low-level connection API described in
-[`0008-sqlite-connection-package.md`](0008-sqlite-connection-package.md).
+[`0009-sqlite-connection-package.md`](0009-sqlite-connection-package.md).
 `@hyperkernel/ui` is consumed directly from source by
 `@hyperkernel/playground`. A later step must select and verify distribution
 builds before any package can be published.
