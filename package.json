@@ -28,7 +28,7 @@
     "npm": ">=11"
   },
   "scripts": {
-    "prepare": "npm run prepare --workspace @hyperkernel/playground && husky",
+    "prepare": "husky",
     "dev": "npm run dev --workspace @hyperkernel/playground",
     "build": "npm run build --workspace @hyperkernel/playground",
     "preview": "npm run preview --workspace @hyperkernel/playground",
