@@ -1,24 +1,9 @@
-import { fileURLToPath } from "node:url";
-
 import { defineConfig } from "vitest/config";
 import { sveltekit } from "@sveltejs/kit/vite";
 import adapter from "@sveltejs/adapter-node";
 import { playwright } from "@vitest/browser-playwright";
 
-export default defineConfig(({ mode }) => ({
-  resolve: {
-    alias:
-      mode === "development" || mode === "test"
-        ? [
-            {
-              find: "@hyperkernel/ui",
-              replacement: fileURLToPath(
-                new URL("../../packages/ui/src/lib/index.ts", import.meta.url),
-              ),
-            },
-          ]
-        : [],
-  },
+export default defineConfig({
   plugins: [
     sveltekit({
       experimental: {
@@ -75,4 +60,4 @@ export default defineConfig(({ mode }) => ({
       },
     ],
   },
-}));
+});
