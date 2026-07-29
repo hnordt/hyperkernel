@@ -99,16 +99,17 @@ cannot present tool output or an agent review as the accountable approval.
 A pull request must disclose material AI involvement when AI generated or
 substantially transformed repository content. Identify the relevant tool or
 agent when known, mark whether AI was used for planning, implementation, and/or
-writing tests, and select one overall usage level:
+writing tests, and select one overall usage level. The levels describe human
+involvement before the AI presents a completed result:
 
 - **Supervised** — AI automated manual work while a human continuously directed
-  and reviewed each step during production, as in pair programming.
+  and reviewed each step in real time, as in pair programming.
 - **Assisted** — AI performed most of the work while a human periodically
-  reviewed or corrected intermediate work during production, without
-  continuously supervising each step.
+  reviewed or corrected intermediate work, without continuously supervising
+  each step.
 - **Automated** — AI produced the completed work after initial instructions,
-  without human review or intervention during production. A later review of the
-  completed work does not change this level.
+  without further human review or intervention. A later review of the completed
+  work does not change this level.
 
 If different parts used different levels, report the level with the greatest AI
 autonomy used materially anywhere in the pull request. For example, a pull
