@@ -33,7 +33,8 @@ When AI materially creates or transforms repository content, the pull request
 description must include:
 
 - the tool or agent used, when known;
-- whether the work was AI-assisted or autonomously agent-authored;
+- which parts of the work used AI: planning, implementation, and/or tests;
+- one overall AI usage level: supervised, assisted, or automated;
 - one or more applicable change classifications: Kernel, Extension, and/or Experience;
 - the verification performed;
 - unresolved uncertainty, failed checks, and pending security, compatibility,
@@ -42,13 +43,10 @@ description must include:
 Follow `CONTRIBUTING.md` for the complete policy. Disclosure and agent review do
 not replace required human review or approval.
 
-Classify a pull request as AI-assisted or human-directed whenever a person
-defines its objectives, makes material decisions, approves its scope, or
-otherwise guides the work, including through conversation. Classify it as
-autonomously agent-authored only when the agent determines and executes the
-work without meaningful human direction or approval. Do not label
-conversational or user-directed work as autonomous merely because the agent
-performed the implementation or publication steps without intervention.
+When the level differs between parts of the work, report the level with the
+greatest AI autonomy used materially anywhere in the pull request. The level
+describes how the content was produced, not whether it has received the human
+review or approval required for its change classification.
 
 ## Canonical data flow
 

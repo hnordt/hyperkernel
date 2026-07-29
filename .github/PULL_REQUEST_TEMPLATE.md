@@ -13,10 +13,18 @@ Describe the checks performed, including failed checks and unverified assumption
 
 ## AI involvement
 
-<!-- If AI did not materially create or transform repository content, state that here. Otherwise complete every field below. -->
+<!-- If AI did not materially create or transform repository content, select "No material AI involvement." Otherwise complete every field below. See CONTRIBUTING.md for definitions. -->
 
+- [ ] No material AI involvement
 - Tool or agent:
-- Autonomy: <!-- AI-assisted or autonomously agent-authored -->
+- AI usage: <!-- Select every applicable area. -->
+  - [ ] Planning
+  - [ ] Implementation
+  - [ ] Tests
+- Overall usage level: <!-- Select one. For mixed usage, select the level with the greatest AI autonomy. -->
+  - [ ] Supervised
+  - [ ] Assisted
+  - [ ] Automated
 - Classification: <!-- One or more of: Kernel, Extension, Experience -->
 - Unresolved uncertainty and pending risk: <!-- Include security, compatibility, and recovery risks; state "None known" when none. -->
 

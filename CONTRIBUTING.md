@@ -94,22 +94,33 @@ The same person may author, review, approve, or merge where repository rules
 allow, but those activities must not be conflated. In particular, an author
 cannot present tool output or an agent review as the accountable approval.
 
-### AI-assisted and autonomous work
-
-**AI-assisted or human-directed work** includes any work where a person defines
-the objectives, makes material decisions, approves the scope, or otherwise
-guides the work, including through conversation. **Autonomous agent work**
-applies only when the agent determines and executes the work without meaningful
-human direction or approval. Delegated or conversational work remains
-human-directed even when the agent completes it without contemporaneous
-supervision. Both are acceptable, and both require review proportional to risk.
+### AI usage disclosure
 
 A pull request must disclose material AI involvement when AI generated or
-substantially transformed repository content. State whether the work was
-AI-assisted or autonomously agent-authored and identify the relevant tool or
-agent when known. Incidental completion, spelling, search, or formatting help
-does not require disclosure. Disclosure provides useful provenance; it does
-not reduce the human review standard or imply that generated content is wrong.
+substantially transformed repository content. Identify the relevant tool or
+agent when known, mark whether AI was used for planning, implementation, and/or
+writing tests, and select one overall usage level:
+
+- **Supervised** — AI automated manual work while a human continuously directed
+  and reviewed each step in real time, as in pair programming.
+- **Assisted** — AI performed most of the work with limited supervision, such as
+  receiving an initial prompt and occasional corrections, followed by a
+  critical human review of the completed work.
+- **Automated** — AI performed the work after an initial prompt and any
+  occasional corrections, without continuous supervision or a critical human
+  review of the completed work.
+
+If different parts used different levels, report the level with the greatest AI
+autonomy used materially anywhere in the pull request. For example, a pull
+request with supervised planning and assisted implementation is classified as
+assisted. Running tests does not mean AI was used to write them.
+
+Incidental completion, spelling, search, or formatting help does not require
+disclosure. Disclosure provides useful provenance; it does not reduce the human
+review standard or imply that generated content is wrong. The usage level
+describes how the content was produced, not whether it is approved. Automated
+work still requires the human review and approval appropriate to its change
+classification before merge.
 
 The pull request description must also identify the change classification,
 summarize the verification performed, and call out unverified assumptions,
