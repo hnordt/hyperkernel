@@ -1,6 +1,6 @@
 import { defineConfig } from "vitest/config";
 import { sveltekit } from "@sveltejs/kit/vite";
-import adapter from "@sveltejs/adapter-node";
+import adapter from "@sveltejs/adapter-auto";
 import { playwright } from "@vitest/browser-playwright";
 
 export default defineConfig({
@@ -13,7 +13,6 @@ export default defineConfig({
         experimental: {
           async: true,
         },
-        // Force runes mode for the project, except for libraries. Can be removed in svelte 6.
         runes: ({ filename }) =>
           filename.split(/[/\\]/).includes("node_modules") ? undefined : true,
       },
