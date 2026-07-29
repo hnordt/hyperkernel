@@ -1,18 +1,5 @@
 # macOS
 .DS_Store
 
-# Environment
-.env
-.env.*
-!.env.example
-
 # Node.js
 node_modules/
-
-# SvelteKit
-.svelte-kit/
-build/
-dist/
-
-# Playwright
-test-results/

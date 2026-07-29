@@ -20,6 +20,7 @@
     "**/*.css"
   ],
   "scripts": {
+    "prepare": "svelte-kit sync",
     "prepack": "svelte-kit sync && svelte-package && publint",
     "dev": "vite dev",
     "build": "vite build && npm run prepack",

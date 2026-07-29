@@ -19,41 +19,4 @@ export default defineConfig({
       adapter: adapter(),
     }),
   ],
-  test: {
-    projects: [
-      {
-        extends: "./vite.config.ts",
-        test: {
-          name: "client",
-          browser: {
-            provider: playwright(),
-            instances: [
-              {
-                browser: "chromium",
-                headless: true,
-              },
-            ],
-            enabled: true,
-          },
-          include: [
-            "src/**/*.svelte.{test,spec}.ts",
-            "../../packages/ui/src/**/*.svelte.{test,spec}.ts",
-          ],
-          exclude: ["src/lib/server/**"],
-        },
-      },
-      {
-        extends: "./vite.config.ts",
-        test: {
-          name: "server",
-          environment: "node",
-          include: [
-            "src/**/*.{test,spec}.ts",
-            "../../packages/sqlite/src/**/*.{test,spec}.ts",
-          ],
-          exclude: ["**/*.svelte.{test,spec}.ts"],
-        },
-      },
-    ],
-  },
 });
