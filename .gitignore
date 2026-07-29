@@ -1,25 +1,18 @@
 # macOS
 .DS_Store
 
-# Env
+# Environment
 .env
 .env.*
 !.env.example
-!.env.test
-
-# SQLite
-*.db
 
 # Node.js
-node_modules
+node_modules/
 
 # SvelteKit
-/apps/*/.svelte-kit
-/packages/ui/.svelte-kit
-/apps/*/build
+.svelte-kit/
+build/
+dist/
 
 # Playwright
-/.playwright-mcp
-/apps/*/.playwright-mcp
-/apps/*/playwright-report
-/apps/*/test-results
+test-results/
