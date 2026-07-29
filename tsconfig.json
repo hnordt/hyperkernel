@@ -6,5 +6,5 @@
     "esModuleInterop": true,
     "rewriteRelativeImportExtensions": true
   },
-  "include": ["packages/**/*.js", "packages/**/*.ts", "packages/**/*.svelte"]
+  "include": ["packages/**/*.js", "packages/**/*.ts"]
 }

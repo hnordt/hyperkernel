@@ -50,12 +50,9 @@ export default defineConfig({
           environment: "node",
           include: [
             "src/**/*.{test,spec}.ts",
-            "../../packages/**/*.{test,spec}.ts",
+            "../../packages/sqlite/src/**/*.{test,spec}.ts",
           ],
-          exclude: [
-            "**/*.svelte.{test,spec}.ts",
-            "../../packages/**/*.svelte.{test,spec}.ts",
-          ],
+          exclude: ["**/*.svelte.{test,spec}.ts"],
         },
       },
     ],

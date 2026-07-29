@@ -33,7 +33,7 @@
     "build": "npm run build --workspace @hyperkernel/playground",
     "preview": "npm run preview --workspace @hyperkernel/playground",
     "start": "npm run start --workspace @hyperkernel/playground",
-    "check": "npm run check --workspace @hyperkernel/ui && npm run check --workspace @hyperkernel/playground",
+    "check": "tsc --noEmit --project ./tsconfig.json && npm run check --workspace @hyperkernel/ui && npm run check --workspace @hyperkernel/playground",
     "lint": "prettier --check . && eslint .",
     "format": "prettier --write .",
     "test": "npm run test:unit -- --run && npm run test:e2e",
