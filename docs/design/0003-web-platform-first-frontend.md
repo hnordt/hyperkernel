@@ -5,7 +5,15 @@
 | Status       | Development        |
 | Scope        | Kernel, Experience |
 | Created      | 2026-07-27         |
-| Last updated | 2026-07-28         |
+| Last updated | 2026-08-02         |
+
+> [!NOTE]
+> [0010: Deno runtime and Web Components frontend](0010-deno-runtime-and-web-components-frontend.md)
+> proposes replacing this record in full while carrying forward its Web
+> Platform, accessibility, headless-UI, Zod, dependency-review, and security
+> decisions. This record continues to describe the implemented Development
+> direction until 0010 becomes Stable; both records and the index must then be
+> updated together as this record moves to Legacy.
 
 ## Summary
 
