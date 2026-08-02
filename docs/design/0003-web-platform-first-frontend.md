@@ -8,10 +8,12 @@
 | Last updated | 2026-08-02         |
 
 > [!NOTE]
-> [0009: Deno runtime and Web Components frontend](0009-deno-runtime-and-web-components-frontend.md)
-> proposes replacing the Svelte and SvelteKit decisions in this record. Until
-> that draft is approved and implemented, this record continues to describe the
-> current Development direction.
+> [0010: Deno runtime and Web Components frontend](0010-deno-runtime-and-web-components-frontend.md)
+> proposes replacing this record in full while carrying forward its Web
+> Platform, accessibility, headless-UI, Zod, dependency-review, and security
+> decisions. This record continues to describe the implemented Development
+> direction until 0010 becomes Stable; both records and the index must then be
+> updated together as this record moves to Legacy.
 
 ## Summary
 

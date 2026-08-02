@@ -10,6 +10,7 @@ reviewed, or maintained. Product and platform design records remain in
 | Record                                                                                                     | Status      |
 | ---------------------------------------------------------------------------------------------------------- | ----------- |
 | [ADR 0001: Change classification by affected contract](0001-change-classification-by-affected-contract.md) | Development |
+| [ADR 0002: Path and pathname terminology](0002-path-and-pathname-terminology.md)                           | Development |
 
 ## Authority
 

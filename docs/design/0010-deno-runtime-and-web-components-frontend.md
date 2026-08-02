@@ -1,4 +1,4 @@
-# 0009: Deno runtime and Web Components frontend
+# 0010: Deno runtime and Web Components frontend
 
 | Field        | Value              |
 | ------------ | ------------------ |
@@ -29,13 +29,30 @@ shadow tree; it does not by itself solve hydration, event attachment, state
 reconciliation, or component composition. Those contracts require implementation
 evidence before this record can advance.
 
-This record proposes a replacement for the Svelte and SvelteKit decisions in
+This record proposes a complete replacement for
 [0003: Web-platform-first frontend](0003-web-platform-first-frontend.md). It
-does not claim that the replacement has already been implemented. The current
-repository remains a SvelteKit application running on Node.js and managed with
-npm until an incremental migration satisfies the evidence in this record and the
-canonical guidance in `README.md`, `AGENTS.md`, and `CONTRIBUTING.md` is
-updated.
+changes the Svelte and SvelteKit decisions while carrying forward that record's
+Web Platform, accessibility, headless-UI, Zod, dependency-review, and security
+decisions. It does not claim that the replacement has already been implemented.
+The current repository remains a SvelteKit application running on Node.js and
+managed with npm until an incremental migration satisfies the evidence in this
+record and the canonical guidance in `README.md`, `AGENTS.md`, and
+`CONTRIBUTING.md` is updated.
+
+### Relationship to record 0003
+
+Record 0003 continues to describe the implemented frontend and tooling baseline
+while this record is Draft, Development, or Evaluation. Advancing this record to
+Development also ends new investment in the Svelte and SvelteKit direction
+except for compatibility, security, and migration work needed to preserve a
+runnable system.
+
+Record 0003 will move directly from Development to Legacy in the same change
+that advances this record to Stable. That change must update both records and
+the design-record index. Because this record carries forward every decision
+from record 0003 that remains applicable, the transition will not retire the Web
+Platform, accessibility, headless-UI, Zod, dependency-review, or security
+contracts.
 
 ## Problem
 
@@ -128,8 +145,42 @@ systems supplied by Svelte, React, and similar frameworks.
 13. The repository does not maintain permanent parallel Svelte and Web
     Components implementations of the same interface. Temporary coexistence
     requires an explicit migration boundary and removal condition.
+14. Hyperkernel uses semantic HTML, native controls, CSS, ECMAScript, and
+    browser APIs directly when they satisfy the required contract. It does not
+    adopt a headless UI library without a new design record.
+15. Platform-first implementation does not weaken accessibility. Custom
+    interactions preserve correct semantics, keyboard operation, focus
+    behavior, and assistive-technology support.
+16. Zod remains the runtime schema-validation mechanism. Its internal
+    representation is not a durable wire or storage format, and upgrades must
+    preserve the accepted meaning of versioned schemas.
 
 ## Decision
+
+### Carry forward the platform, accessibility, and validation boundaries
+
+Hyperkernel continues to use semantic HTML, native controls, CSS, ECMAScript,
+and browser APIs directly when they satisfy the product contract. It continues
+to own the observable behavior and styling of its core interface primitives and
+will not introduce a headless UI library without a new design record that
+defines the missing platform capability, accessibility behavior, compatibility
+contract, dependency impact, and exit path.
+
+Accessibility remains a product contract rather than a benefit assumed from a
+framework or component library. Custom elements and intentional deviations from
+native behavior must preserve semantics, keyboard operation, focus behavior,
+forms, and assistive-technology support through documented tests.
+
+Zod remains the runtime validation mechanism for untrusted structured data.
+Schemas may be implemented with regular Zod or Zod Mini when their APIs satisfy
+the boundary, but their internal representation does not identify a durable
+contract. Event and storage compatibility remain governed by explicit types and
+schema versions.
+
+Future dependency exceptions require the same evidence established by record
+0003: the missing platform capability, observable behavior owned by the
+dependency, compatibility contract, transitive and build impact, migration
+path, and why local ownership would be riskier.
 
 ### Use Deno as the primary runtime and toolchain
 
@@ -330,21 +381,25 @@ The migration will proceed through explicit boundaries instead of rewriting the
 application in one step:
 
 1. Define the Deno workspace, pinned runtime version, tasks, permissions, and
-   repository-wide verification commands without changing kernel behavior.
+   repository-wide verification commands without changing kernel behavior. Add
+   the corresponding CI path and setup guidance in the same change.
 2. Make kernel and storage packages executable and testable through Deno while
    preserving SQLite and public-contract tests.
 3. Define one representative custom-element package with client rendering,
    server rendering, typed public contracts, accessibility tests, and an
    external-consumer smoke test.
 4. Replace SvelteKit-specific command and query adapters with explicit `Request`
-   and `Response` transports over the same kernel contracts.
+   and `Response` transports over the same kernel contracts, updating their
+   examples and canonical transport guidance in the same change.
 5. Migrate the Hyperkernel shell by coherent interface areas, with temporary
-   interoperation only where the removal condition is documented.
+   interoperation only where the removal condition and current setup guidance
+   are documented.
 6. Verify npm artifacts from clean consumer projects, then remove obsolete npm,
    Node.js, Svelte, SvelteKit, Vite, Prettier, ESLint, and adapter
-   configuration.
-7. Update `README.md`, `AGENTS.md`, `CONTRIBUTING.md`, examples, CI, and setup
-   instructions only when the corresponding migration step is true.
+   configuration. Each removal must update the affected `README.md`,
+   `AGENTS.md`, `CONTRIBUTING.md`, examples, CI commands, and setup instructions
+   in the same coherent change so every intermediate repository state remains
+   runnable, testable, and permitted by its canonical guidance.
 
 The migration must preserve a runnable and testable path. Temporary adapters
 must not become permanent public APIs merely because they existed during the
@@ -502,8 +557,8 @@ contracts are correct.
 
 This record may advance to Development when:
 
-- the replacement of the Svelte and SvelteKit choices in record 0003 is
-  approved;
+- its complete replacement of record 0003, including the retained decisions and
+  eventual Legacy transition, is approved;
 - the Deno runtime, workspace, permission, and npm-distribution boundaries are
   accepted;
 - the narrow Preact boundary and explicit state model are accepted;
