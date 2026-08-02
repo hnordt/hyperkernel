@@ -30,6 +30,7 @@ Repository architecture and governance definitions belong in
 | [0006: Error handling and recovery](0006-error-handling-and-recovery.md)                                | Draft       |
 | [0007: Managed filesystems](0007-managed-filesystems.md)                                                | Draft       |
 | [0008: Process orchestration and actor model evaluation](0008-process-orchestration-and-actor-model.md) | Draft       |
+| [0009: Deno runtime and Web Components frontend](0009-deno-runtime-and-web-components-frontend.md)      | Draft       |
 
 ## Authority
 
