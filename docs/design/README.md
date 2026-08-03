@@ -32,6 +32,7 @@ Repository architecture and governance definitions belong in
 | [0008: Process orchestration and actor model evaluation](0008-process-orchestration-and-actor-model.md) | Draft       |
 | [0009: Explicit business rules](0009-explicit-business-rules.md)                                        | Draft       |
 | [0010: Deno runtime and Web Components frontend](0010-deno-runtime-and-web-components-frontend.md)      | Draft       |
+| [0011: Web Components integration with Preact](0011-web-components-integration-with-preact.md)          | Draft       |
 
 ## Authority
 
