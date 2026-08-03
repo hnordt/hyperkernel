@@ -1,4 +1,4 @@
-# 0010: Web Components integration with Preact
+# 0011: Web Components integration with Preact
 
 | Field        | Value              |
 | ------------ | ------------------ |
@@ -35,18 +35,18 @@ contract. The experiment does not enter the authoritative write transaction or
 change command, event, projection, authorization, persistence, or replay
 behavior.
 
-## Relationship to the current frontend decision
+## Relationship to the frontend direction
 
-[0003: Web-platform-first frontend](0003-web-platform-first-frontend.md) keeps
-Svelte and SvelteKit as the chosen application model and currently rejects
-Custom Elements without Svelte as the general frontend foundation. This draft
-does not override that decision.
+[0010: Deno runtime and Web Components frontend](0010-deno-runtime-and-web-components-frontend.md)
+proposes the repository-wide runtime and frontend direction. Record 0003
+continues to describe the implemented Svelte and SvelteKit baseline until the
+transition defined by record 0010 is approved and completed.
 
-The narrower question here is whether Custom Elements can provide a useful
-application-facing interoperability boundary while a small renderer supplies
-declarative DOM updates inside each element. The experiment must demonstrate a
-material benefit over ordinary Svelte components before it can change the
-current frontend direction.
+This record is subordinate to record 0010. It preserves a narrower reference
+sketch and the evidence needed to evaluate one possible `HKElement` authoring
+API and development delivery path. Advancing this record does not advance
+record 0010, authorize the migration, or make the illustrative API a supported
+contract.
 
 ## Problem
 
@@ -196,7 +196,7 @@ The initial flow is:
 ```mermaid
 flowchart LR
   W["Deno watcher"] --> B["Browser-targeted bundle"]
-  B --> F["In-memory JavaScript file"]
+  B --> F["In-memory asset catalog"]
   F --> H["HTML module script"]
   H --> R["Register hk-foo"]
   R --> U["Upgrade host element"]
@@ -240,8 +240,9 @@ must state whether Declarative Shadow DOM is involved.
 
 This sketch normalizes the first draft by using the same `/dev` path on the
 client and server, naming the JSX server file `.tsx`, targeting the browser
-explicitly, and checking the bundler's success result. It remains illustrative
-and unverified in this repository.
+explicitly, preserving bundler output paths and media types, and checking the
+bundler's success result. It remains illustrative and unverified in this
+repository.
 
 ```text
 ui/HKElement.ts
@@ -277,14 +278,17 @@ import HKFoo from "./components/HKFoo.tsx";
 
 customElements.define("hk-foo", HKFoo);
 
-// Development entrypoints only.
-new EventSource("/dev").addEventListener("message", () => {
-  location.reload();
-});
+if (document.documentElement.dataset.development === "true") {
+  new EventSource("/dev").addEventListener("message", () => {
+    location.reload();
+  });
+}
 ```
 
 The JSX declaration allows `<hk-foo />` but deliberately defines no attributes
-yet.
+yet. The server marks the document as development-only when invoked with
+`--dev`; otherwise the browser does not open the reload channel and the server
+returns `404` for `/dev`.
 
 ### `server/main.tsx`
 
@@ -292,14 +296,89 @@ yet.
 import type {} from "../ui/elements.d.ts";
 import { renderToStaticMarkup } from "preact-render-to-string";
 
+type Asset = Readonly<{
+  pathname: string;
+  contents: Uint8Array;
+  contentType: string;
+}>;
+
+type DevConnection = {
+  controller: ReadableStreamDefaultController<Uint8Array>;
+  watcher: Deno.FsWatcher;
+  closed: boolean;
+};
+
+const outputDirectory = "dist";
+const entryOutputPath = `${outputDirectory}/client.js`;
+const development = Deno.args.includes("--dev");
+const devConnections = new Set<DevConnection>();
+
+function assetPathname(outputPath: string): string {
+  const normalized = outputPath.replaceAll("\\", "/");
+  const directoryPrefix = `${outputDirectory}/`;
+  const absoluteMarker = `/${directoryPrefix}`;
+  const markerIndex = normalized.lastIndexOf(absoluteMarker);
+  const relativePath = normalized.startsWith(directoryPrefix)
+    ? normalized.slice(directoryPrefix.length)
+    : markerIndex >= 0
+      ? normalized.slice(markerIndex + absoluteMarker.length)
+      : undefined;
+
+  if (!relativePath || relativePath.split("/").includes("..")) {
+    throw new Error(`Unexpected client output path: ${outputPath}`);
+  }
+
+  return `/${relativePath}`;
+}
+
+function contentType(pathname: string): string {
+  if (pathname.endsWith(".js") || pathname.endsWith(".mjs")) {
+    return "text/javascript;charset=utf-8";
+  }
+
+  if (pathname.endsWith(".css")) {
+    return "text/css;charset=utf-8";
+  }
+
+  if (pathname.endsWith(".json") || pathname.endsWith(".map")) {
+    return "application/json;charset=utf-8";
+  }
+
+  if (pathname.endsWith(".wasm")) {
+    return "application/wasm";
+  }
+
+  return "application/octet-stream";
+}
+
+function releaseDevConnection(connection: DevConnection): boolean {
+  if (connection.closed) return false;
+
+  connection.closed = true;
+  connection.watcher.close();
+  devConnections.delete(connection);
+  return true;
+}
+
+function closeDevConnection(connection: DevConnection): void {
+  if (releaseDevConnection(connection)) connection.controller.close();
+}
+
+function failDevConnection(connection: DevConnection, error: unknown): void {
+  if (releaseDevConnection(connection)) connection.controller.error(error);
+}
+
 const client = {
-  files: [] as Array<File>,
+  assets: [] as Array<Asset>,
+  entryModulePathname: assetPathname(entryOutputPath),
 
   async bundle(): Promise<void> {
     const result = await Deno.bundle({
       entrypoints: ["./client/main.ts"],
       platform: "browser",
       format: "esm",
+      inlineImports: true,
+      outputPath: entryOutputPath,
       write: false,
     });
 
@@ -313,61 +392,83 @@ const client = {
       throw new Error("Client bundle generated no output files");
     }
 
-    const replacement = result.outputFiles.map(
-      (output) =>
-        new File([output.text()], output.hash, {
-          type: "text/javascript;charset=utf-8",
-        }),
-    );
+    const replacement = result.outputFiles.map((output): Asset => {
+      const pathname = assetPathname(output.path);
 
-    this.files = replacement;
+      return {
+        pathname,
+        contents: output.contents ?? new TextEncoder().encode(output.text()),
+        contentType: contentType(pathname),
+      };
+    });
+
+    if (
+      !replacement.some((asset) => asset.pathname === this.entryModulePathname)
+    ) {
+      throw new Error("Client bundle generated no entry module");
+    }
+
+    this.assets = replacement;
   },
 };
 
 await client.bundle();
 
-const server = Deno.serve((request) => {
+const server = Deno.serve({ hostname: "127.0.0.1" }, (request) => {
   const url = new URL(request.url);
-  const file = client.files.find(
-    (candidate) => candidate.name === url.pathname.slice(1),
+  const asset = client.assets.find(
+    (candidate) => candidate.pathname === url.pathname,
   );
 
-  if (file) {
-    return new Response(file, {
+  if (asset) {
+    return new Response(asset.contents, {
       headers: {
         "Cache-Control": "no-cache",
-        "Content-Type": file.type,
+        "Content-Type": asset.contentType,
       },
     });
   }
 
   if (url.pathname === "/dev") {
+    if (!development) return new Response("Not found", { status: 404 });
+    if (devConnections.size > 0) {
+      return new Response("Development reload is already connected", {
+        status: 409,
+      });
+    }
+
     const encoder = new TextEncoder();
-    const watcher = Deno.watchFs("./client");
+    const watcher = Deno.watchFs(["./client", "./ui"]);
+    let connection: DevConnection | undefined;
 
     const body = new ReadableStream<Uint8Array>({
       start(controller) {
+        connection = { controller, watcher, closed: false };
+        devConnections.add(connection);
+        const activeConnection = connection;
+
         void (async () => {
           try {
-            for await (const event of watcher) {
+            for await (const _event of watcher) {
               await client.bundle();
               controller.enqueue(
                 encoder.encode(
                   `data: ${JSON.stringify({
                     type: "SOURCE_CHANGED",
-                    payload: event,
                   })}\n\n`,
                 ),
               );
             }
           } catch (error) {
-            controller.error(error);
+            failDevConnection(activeConnection, error);
+          } finally {
+            closeDevConnection(activeConnection);
           }
         })();
       },
 
       cancel() {
-        watcher.close();
+        if (connection) releaseDevConnection(connection);
       },
     });
 
@@ -380,12 +481,10 @@ const server = Deno.serve((request) => {
   }
 
   const html = renderToStaticMarkup(
-    <html lang="en">
+    <html lang="en" data-development={development ? "true" : undefined}>
       <head>
         <meta charset="utf-8" />
-        {client.files.map((file) => (
-          <script key={file.name} type="module" src={`/${file.name}`} />
-        ))}
+        <script type="module" src={client.entryModulePathname} />
       </head>
       <body>
         <main>
@@ -403,9 +502,20 @@ const server = Deno.serve((request) => {
 });
 
 Deno.addSignalListener("SIGINT", async () => {
+  for (const connection of [...devConnections]) {
+    closeDevConnection(connection);
+  }
+
   await server.shutdown();
 });
 ```
+
+The fixed `outputPath` identifies the actual entry module, while
+`inlineImports: true` deliberately keeps code splitting outside this first
+sketch. Every returned output is still cataloged under its bundler-provided
+relative path and its own media type, but only `entryModulePathname` becomes a
+module script. A later code-splitting experiment must retain the same path
+relationship for imported chunks rather than renaming outputs by hash alone.
 
 ### `deno.json`
 
@@ -448,20 +558,20 @@ errors are fatal.
 
 ### Rebuild failure
 
-The active bundle remains the last complete successful bundle because the
-replacement array is assigned only after every output is created. The first
-draft closes the affected SSE stream on an exception. A broader development
-server should instead report a structured build failure to connected clients
-and continue watching so that the next edit can recover without restarting the
-server.
+The active bundle remains the last complete successful asset catalog because
+the replacement array is assigned only after every output is validated. The
+first draft closes the affected SSE stream on an exception. A broader
+development server should instead report a structured build failure to
+connected clients and continue watching so that the next edit can recover
+without restarting the server.
 
 ### Multiple browser connections
 
-The sketch creates one filesystem watcher per `/dev` connection. Multiple open
-tabs therefore duplicate watchers and rebuild work and may race to replace the
-same in-memory file list. This is acceptable only as a single-client spike. A
-reusable development server must own one process-wide watcher, serialize or
-coalesce rebuilds, and broadcast the result to all clients.
+The sketch accepts only one `/dev` connection and returns `409` for another, so
+it cannot silently multiply filesystem watchers and rebuild work. This is
+acceptable only as a single-client spike. A reusable development server must
+own one process-wide watcher, serialize or coalesce rebuilds, and broadcast the
+result to all clients.
 
 ### Source-event bursts
 
@@ -470,17 +580,18 @@ therefore perform redundant sequential builds and reloads. Debouncing or
 coalescing may be added only as development tooling; it must not make the
 published bundle state ambiguous.
 
-The watcher also covers only `./client`, while the browser graph imports the
-proposed `./ui` source. A usable implementation must watch every local source
-root that can affect the browser bundle or derive its watch set from the module
-graph.
+The sketch watches `./client` and `./ui`. A usable implementation must watch
+every local source root that can affect the browser bundle or derive its watch
+set from the module graph.
 
 ### Disconnection and shutdown
 
-Cancelling one stream closes its watcher. Process shutdown stops the HTTP
-server on `SIGINT`. The experiment must verify watcher cleanup, aborted client
-connections, failed enqueues, and the behavior of platforms where the selected
-signal contract differs.
+Cancelling the stream closes its watcher. On `SIGINT`, the server closes every
+tracked SSE controller and watcher before awaiting graceful HTTP shutdown, so
+the long-lived `/dev` request cannot keep `server.shutdown()` pending. The
+experiment must still verify watcher cleanup, aborted client connections,
+failed enqueues, repeated signals, and platforms where the selected signal
+contract differs.
 
 ### Element removal and reconnection
 
@@ -493,10 +604,12 @@ disconnection, or delegate that choice explicitly to each subclass.
 ## Security boundary
 
 The development server reads the client source tree, evaluates bundler tooling,
-serves generated JavaScript, and exposes filesystem event metadata through
-SSE. It must bind and run only in an explicitly configured development context.
-Source paths or other unnecessary filesystem details should not be exposed to
-untrusted remote clients.
+and serves generated assets. The sketch binds only to `127.0.0.1`, requires an
+explicit `--dev` argument before exposing `/dev`, accepts one reload connection,
+and sends only a source-changed message rather than filesystem event metadata.
+Loopback and the flag are independent controls, not authentication. A broader
+server must preserve a trusted development boundary and must not expose source
+paths or unnecessary filesystem details to remote clients.
 
 Browser components remain untrusted presentation and extension code relative
 to authoritative Hyperkernel state. Inheriting from `HKElement` grants no
@@ -511,9 +624,9 @@ locked and upgrades reviewed before the experiment becomes a supported path.
 
 ### Continue with Svelte and SvelteKit only
 
-This remains the current repository decision and has the lowest immediate
-integration cost. It provides the established reactive, rendering,
-server-rendering, routing, and build model.
+This remains the implemented baseline described by record 0003 and has the
+lowest immediate integration cost. Record 0010 proposes replacing it only
+after the required migration evidence exists.
 
 It does not by itself test whether a browser-standard Custom Element boundary
 would improve application interoperability or reduce consumer coupling to
@@ -581,8 +694,8 @@ reload is deterministic and makes state-loss behavior honest.
 
 ### Costs and limitations
 
-- The repository would operate Preact and a Deno delivery experiment beside its
-  chosen SvelteKit stack.
+- The repository would operate a Preact and Deno delivery experiment beside its
+  currently implemented SvelteKit stack during evaluation or migration.
 - `VNode` makes Preact part of the subclass contract.
 - The draft defines no reactive state, attribute/property reflection, typed
   events, forms, slots, cleanup, error boundary, or hydration behavior.
@@ -636,14 +749,14 @@ must be replaced before multi-client use.
   hydration contract?
 - Should development assets use content-addressed immutable caching rather than
   a hash name with `no-cache`?
-- Should Deno remain only an isolated experiment, or is there a justified path
-  from the repository's Node/SvelteKit runtime to this delivery model?
+- How should this isolated delivery experiment contribute evidence to the
+  migration path proposed by record 0010?
 
 ## Decision boundary
 
-This Draft authorizes only an isolated experiment. It does not authorize a
-second production frontend stack, a new public package, or migration away from
-SvelteKit.
+This Draft authorizes only an isolated experiment. It does not advance record
+0010, authorize a second production frontend stack, publish a new package, or
+begin the migration away from SvelteKit.
 
 The record should advance to Development only if a representative component
 demonstrates that the Custom Element boundary provides concrete interoperability
@@ -692,6 +805,7 @@ failure, browser compatibility, and Svelte interoperability tests pass.
 - [Hyperkernel public architecture](../../README.md)
 - [Hyperkernel engineering contracts](../../AGENTS.md)
 - [0003: Web-platform-first frontend](0003-web-platform-first-frontend.md)
+- [0010: Deno runtime and Web Components frontend](0010-deno-runtime-and-web-components-frontend.md)
 - [Deno bundling](https://docs.deno.com/runtime/reference/bundling/)
 - [Deno bundler API](https://docs.deno.com/api/deno/bundler/)
 - [MDN: Using custom elements](https://developer.mozilla.org/en-US/docs/Web/API/Web_components/Using_custom_elements)
