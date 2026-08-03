@@ -196,7 +196,7 @@ The initial flow is:
 ```mermaid
 flowchart LR
   W["Deno watcher"] --> B["Browser-targeted bundle"]
-  B --> F["In-memory asset catalog"]
+  B --> F["In-memory JavaScript file"]
   F --> H["HTML module script"]
   H --> R["Register hk-foo"]
   R --> U["Upgrade host element"]
@@ -240,9 +240,8 @@ must state whether Declarative Shadow DOM is involved.
 
 This sketch normalizes the first draft by using the same `/dev` path on the
 client and server, naming the JSX server file `.tsx`, targeting the browser
-explicitly, preserving bundler output paths and media types, and checking the
-bundler's success result. It remains illustrative and unverified in this
-repository.
+explicitly, and checking the bundler's success result. It remains illustrative
+and unverified in this repository.
 
 ```text
 ui/HKElement.ts
@@ -278,17 +277,14 @@ import HKFoo from "./components/HKFoo.tsx";
 
 customElements.define("hk-foo", HKFoo);
 
-if (document.documentElement.dataset.development === "true") {
-  new EventSource("/dev").addEventListener("message", () => {
-    location.reload();
-  });
-}
+// Development entrypoints only.
+new EventSource("/dev").addEventListener("message", () => {
+  location.reload();
+});
 ```
 
 The JSX declaration allows `<hk-foo />` but deliberately defines no attributes
-yet. The server marks the document as development-only when invoked with
-`--dev`; otherwise the browser does not open the reload channel and the server
-returns `404` for `/dev`.
+yet.
 
 ### `server/main.tsx`
 
@@ -296,89 +292,14 @@ returns `404` for `/dev`.
 import type {} from "../ui/elements.d.ts";
 import { renderToStaticMarkup } from "preact-render-to-string";
 
-type Asset = Readonly<{
-  pathname: string;
-  contents: Uint8Array;
-  contentType: string;
-}>;
-
-type DevConnection = {
-  controller: ReadableStreamDefaultController<Uint8Array>;
-  watcher: Deno.FsWatcher;
-  closed: boolean;
-};
-
-const outputDirectory = "dist";
-const entryOutputPath = `${outputDirectory}/client.js`;
-const development = Deno.args.includes("--dev");
-const devConnections = new Set<DevConnection>();
-
-function assetPathname(outputPath: string): string {
-  const normalized = outputPath.replaceAll("\\", "/");
-  const directoryPrefix = `${outputDirectory}/`;
-  const absoluteMarker = `/${directoryPrefix}`;
-  const markerIndex = normalized.lastIndexOf(absoluteMarker);
-  const relativePath = normalized.startsWith(directoryPrefix)
-    ? normalized.slice(directoryPrefix.length)
-    : markerIndex >= 0
-      ? normalized.slice(markerIndex + absoluteMarker.length)
-      : undefined;
-
-  if (!relativePath || relativePath.split("/").includes("..")) {
-    throw new Error(`Unexpected client output path: ${outputPath}`);
-  }
-
-  return `/${relativePath}`;
-}
-
-function contentType(pathname: string): string {
-  if (pathname.endsWith(".js") || pathname.endsWith(".mjs")) {
-    return "text/javascript;charset=utf-8";
-  }
-
-  if (pathname.endsWith(".css")) {
-    return "text/css;charset=utf-8";
-  }
-
-  if (pathname.endsWith(".json") || pathname.endsWith(".map")) {
-    return "application/json;charset=utf-8";
-  }
-
-  if (pathname.endsWith(".wasm")) {
-    return "application/wasm";
-  }
-
-  return "application/octet-stream";
-}
-
-function releaseDevConnection(connection: DevConnection): boolean {
-  if (connection.closed) return false;
-
-  connection.closed = true;
-  connection.watcher.close();
-  devConnections.delete(connection);
-  return true;
-}
-
-function closeDevConnection(connection: DevConnection): void {
-  if (releaseDevConnection(connection)) connection.controller.close();
-}
-
-function failDevConnection(connection: DevConnection, error: unknown): void {
-  if (releaseDevConnection(connection)) connection.controller.error(error);
-}
-
 const client = {
-  assets: [] as Array<Asset>,
-  entryModulePathname: assetPathname(entryOutputPath),
+  files: [] as Array<File>,
 
   async bundle(): Promise<void> {
     const result = await Deno.bundle({
       entrypoints: ["./client/main.ts"],
       platform: "browser",
       format: "esm",
-      inlineImports: true,
-      outputPath: entryOutputPath,
       write: false,
     });
 
@@ -392,83 +313,61 @@ const client = {
       throw new Error("Client bundle generated no output files");
     }
 
-    const replacement = result.outputFiles.map((output): Asset => {
-      const pathname = assetPathname(output.path);
+    const replacement = result.outputFiles.map(
+      (output) =>
+        new File([output.text()], output.hash, {
+          type: "text/javascript;charset=utf-8",
+        }),
+    );
 
-      return {
-        pathname,
-        contents: output.contents ?? new TextEncoder().encode(output.text()),
-        contentType: contentType(pathname),
-      };
-    });
-
-    if (
-      !replacement.some((asset) => asset.pathname === this.entryModulePathname)
-    ) {
-      throw new Error("Client bundle generated no entry module");
-    }
-
-    this.assets = replacement;
+    this.files = replacement;
   },
 };
 
 await client.bundle();
 
-const server = Deno.serve({ hostname: "127.0.0.1" }, (request) => {
+const server = Deno.serve((request) => {
   const url = new URL(request.url);
-  const asset = client.assets.find(
-    (candidate) => candidate.pathname === url.pathname,
+  const file = client.files.find(
+    (candidate) => candidate.name === url.pathname.slice(1),
   );
 
-  if (asset) {
-    return new Response(asset.contents, {
+  if (file) {
+    return new Response(file, {
       headers: {
         "Cache-Control": "no-cache",
-        "Content-Type": asset.contentType,
+        "Content-Type": file.type,
       },
     });
   }
 
   if (url.pathname === "/dev") {
-    if (!development) return new Response("Not found", { status: 404 });
-    if (devConnections.size > 0) {
-      return new Response("Development reload is already connected", {
-        status: 409,
-      });
-    }
-
     const encoder = new TextEncoder();
-    const watcher = Deno.watchFs(["./client", "./ui"]);
-    let connection: DevConnection | undefined;
+    const watcher = Deno.watchFs("./client");
 
     const body = new ReadableStream<Uint8Array>({
       start(controller) {
-        connection = { controller, watcher, closed: false };
-        devConnections.add(connection);
-        const activeConnection = connection;
-
         void (async () => {
           try {
-            for await (const _event of watcher) {
+            for await (const event of watcher) {
               await client.bundle();
               controller.enqueue(
                 encoder.encode(
                   `data: ${JSON.stringify({
                     type: "SOURCE_CHANGED",
+                    payload: event,
                   })}\n\n`,
                 ),
               );
             }
           } catch (error) {
-            failDevConnection(activeConnection, error);
-          } finally {
-            closeDevConnection(activeConnection);
+            controller.error(error);
           }
         })();
       },
 
       cancel() {
-        if (connection) releaseDevConnection(connection);
+        watcher.close();
       },
     });
 
@@ -481,10 +380,12 @@ const server = Deno.serve({ hostname: "127.0.0.1" }, (request) => {
   }
 
   const html = renderToStaticMarkup(
-    <html lang="en" data-development={development ? "true" : undefined}>
+    <html lang="en">
       <head>
         <meta charset="utf-8" />
-        <script type="module" src={client.entryModulePathname} />
+        {client.files.map((file) => (
+          <script key={file.name} type="module" src={`/${file.name}`} />
+        ))}
       </head>
       <body>
         <main>
@@ -502,20 +403,9 @@ const server = Deno.serve({ hostname: "127.0.0.1" }, (request) => {
 });
 
 Deno.addSignalListener("SIGINT", async () => {
-  for (const connection of [...devConnections]) {
-    closeDevConnection(connection);
-  }
-
   await server.shutdown();
 });
 ```
-
-The fixed `outputPath` identifies the actual entry module, while
-`inlineImports: true` deliberately keeps code splitting outside this first
-sketch. Every returned output is still cataloged under its bundler-provided
-relative path and its own media type, but only `entryModulePathname` becomes a
-module script. A later code-splitting experiment must retain the same path
-relationship for imported chunks rather than renaming outputs by hash alone.
 
 ### `deno.json`
 
@@ -558,20 +448,20 @@ errors are fatal.
 
 ### Rebuild failure
 
-The active bundle remains the last complete successful asset catalog because
-the replacement array is assigned only after every output is validated. The
-first draft closes the affected SSE stream on an exception. A broader
-development server should instead report a structured build failure to
-connected clients and continue watching so that the next edit can recover
-without restarting the server.
+The active bundle remains the last complete successful bundle because the
+replacement array is assigned only after every output is created. The first
+draft closes the affected SSE stream on an exception. A broader development
+server should instead report a structured build failure to connected clients
+and continue watching so that the next edit can recover without restarting the
+server.
 
 ### Multiple browser connections
 
-The sketch accepts only one `/dev` connection and returns `409` for another, so
-it cannot silently multiply filesystem watchers and rebuild work. This is
-acceptable only as a single-client spike. A reusable development server must
-own one process-wide watcher, serialize or coalesce rebuilds, and broadcast the
-result to all clients.
+The sketch creates one filesystem watcher per `/dev` connection. Multiple open
+tabs therefore duplicate watchers and rebuild work and may race to replace the
+same in-memory file list. This is acceptable only as a single-client spike. A
+reusable development server must own one process-wide watcher, serialize or
+coalesce rebuilds, and broadcast the result to all clients.
 
 ### Source-event bursts
 
@@ -580,18 +470,17 @@ therefore perform redundant sequential builds and reloads. Debouncing or
 coalescing may be added only as development tooling; it must not make the
 published bundle state ambiguous.
 
-The sketch watches `./client` and `./ui`. A usable implementation must watch
-every local source root that can affect the browser bundle or derive its watch
-set from the module graph.
+The watcher also covers only `./client`, while the browser graph imports the
+proposed `./ui` source. A usable implementation must watch every local source
+root that can affect the browser bundle or derive its watch set from the module
+graph.
 
 ### Disconnection and shutdown
 
-Cancelling the stream closes its watcher. On `SIGINT`, the server closes every
-tracked SSE controller and watcher before awaiting graceful HTTP shutdown, so
-the long-lived `/dev` request cannot keep `server.shutdown()` pending. The
-experiment must still verify watcher cleanup, aborted client connections,
-failed enqueues, repeated signals, and platforms where the selected signal
-contract differs.
+Cancelling one stream closes its watcher. Process shutdown stops the HTTP
+server on `SIGINT`. The experiment must verify watcher cleanup, aborted client
+connections, failed enqueues, and the behavior of platforms where the selected
+signal contract differs.
 
 ### Element removal and reconnection
 
@@ -604,12 +493,10 @@ disconnection, or delegate that choice explicitly to each subclass.
 ## Security boundary
 
 The development server reads the client source tree, evaluates bundler tooling,
-and serves generated assets. The sketch binds only to `127.0.0.1`, requires an
-explicit `--dev` argument before exposing `/dev`, accepts one reload connection,
-and sends only a source-changed message rather than filesystem event metadata.
-Loopback and the flag are independent controls, not authentication. A broader
-server must preserve a trusted development boundary and must not expose source
-paths or unnecessary filesystem details to remote clients.
+serves generated JavaScript, and exposes filesystem event metadata through
+SSE. It must bind and run only in an explicitly configured development context.
+Source paths or other unnecessary filesystem details should not be exposed to
+untrusted remote clients.
 
 Browser components remain untrusted presentation and extension code relative
 to authoritative Hyperkernel state. Inheriting from `HKElement` grants no
