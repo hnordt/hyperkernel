@@ -5,13 +5,35 @@ This file is the canonical engineering guidance for coding agents working in thi
 Agents contributing repository changes must also follow the human and AI
 development policy in `CONTRIBUTING.md`.
 
-When older documentation, an experiment, or a spike conflicts with these files, `README.md` and `AGENTS.md` take precedence. Do not describe a proposed contract as implemented.
+When older documentation, an experiment, or a spike conflicts with these files, `README.md` and `AGENTS.md` take precedence. The explicit-domain-contract invariants below are canonical; design record `0010-explicit-domain-primitives.md` explains them but does not override them. Do not describe a proposed contract as implemented.
 
 ## Mission
 
-Hyperkernel is building a self-hostable application platform around a small, highly trusted kernel. It is intended to let developers and organizations build and run modular applications whose shared contracts allow them to form a software platform tailored to the work they support.
+Hyperkernel is building a self-hostable application platform around a small, highly trusted kernel. It is intended to let independent developers and small organizations build and run modular applications whose shared contracts allow them to form a software platform tailored to the work they support.
 
 Optimize kernel work for correctness, auditability, deterministic recovery, security, and long-term compatibility. Optimize work outside the kernel for safe iteration without allowing it to bypass kernel contracts.
+
+Hyperkernel is event-sourced at its core: commands record intent, accepted
+events are the authoritative durable facts, and projections are disposable
+derived state. The platform records consequential domain decisions and
+external-work lifecycle facts under explicit privacy and retention rules; it
+does not treat exhaustive retention of secrets, raw AI context, or transient UI
+state as auditability.
+
+An additional primary mission is to make domain behavior explicit. The kernel
+provides constrained application and infrastructure primitives; extensions use
+them to define named domain concepts and compose functionality. More verbose
+definitions are an accepted trade-off when they turn an implicit business
+choice into an inspectable contract. AI makes generating that code cheaper but
+does not reduce the required constraints, review, security, compatibility, or
+activation standards.
+
+Hyperkernel does not claim to eliminate implementation detail or make an
+application intrinsically less complex. It reduces and isolates recurring
+application and infrastructure complexity so that developers and AI agents can
+spend most of their effort on domain semantics and business rules. The domain's
+inherent complexity remains: an application must model it accurately and reduce
+its concepts into maintainable, composable contracts for long-term evolution.
 
 ## Classify the change
 
@@ -78,6 +100,13 @@ Humans, applications, automations, system processes, and AI agents use this same
 8. Historical event types and schema versions remain interpretable for as long as those events exist.
 9. Humans and agents use the same command, capability, and audit boundaries.
 10. Replay never re-executes commands or repeats external effects.
+11. Every domain concept that authorizes, rejects, reads decision data, turns accepted intent into a fact, or requests external work is a named primitive descriptor with an explicit category, identity, schemas, dependencies, permitted result, and composition role. Do not hide such behavior in an unregistered helper or arbitrary orchestration branch.
+12. Primitive factories are side-effect free and return only inert descriptors or pure synchronous functions. Author-provided callbacks receive only declared immutable inputs and return validated values or descriptors; they do not receive capabilities that write state, dispatch commands, append events, access unrestricted infrastructure, or execute effects.
+13. A primitive may declare data dependencies but never execute, schedule, mutate, or grant authority to another primitive. The kernel owns dependency resolution and execution order.
+14. Additional declarations are justified when they make a domain contract inspectable and composable, even if the primitive has one current use. Do not replace that explicit boundary with a generic helper merely to reduce code.
+15. Domain code declares external business work through a dedicated effect primitive; it never performs I/O itself. The kernel owns post-commit scheduling, delivery, attempts, retries, reconciliation, and audit under the external-effect contract.
+16. Every primitive has one responsibility. A feature may compose several focused primitives for authorization, decision data, rules, fact mapping, and declared effects; do not collapse those responsibilities into one broad primitive merely to reduce declarations.
+17. Hyperkernel reduces and isolates recurring application and infrastructure complexity; it does not eliminate the complexity inherent in a domain. A successful application definition makes its domain concepts easier to model, reduce, compose, inspect, and maintain over time.
 
 Transient presentation state such as focus, hover, pointer position, or an unsubmitted draft does not need to be event-sourced. Persisted workspace state and other durable user-visible changes do.
 
@@ -131,6 +160,12 @@ Application behavior must expose no event-deletion path. If a legal or privacy r
 ## External effects
 
 Email, payments, webhooks, agent tool calls, and other effects outside the database are not projections.
+
+Domain behavior may declare an effect through a dedicated kernel primitive, but
+the declaration is pure and does not perform the work. Only the kernel may
+schedule and execute a declared effect after durable acceptance. The public
+effect primitive is not implemented yet; its eventual contract must preserve
+the delivery, idempotency, audit, and recovery requirements below.
 
 Use a durable outbox or another explicit delivery boundary with at-least-once delivery. Supply idempotency keys or deduplicate when the receiver supports them. If a crash leaves the remote outcome unknown, record that ambiguity and reconcile it before an unsafe retry.
 
@@ -223,7 +258,7 @@ Infer TypeScript types from Zod schemas instead of duplicating manual interfaces
 - Do not use `action` as a synonym for `command`. A UI action may submit a command.
 - Prefer domain names over generic names such as `data`, `item`, `handler`, `manager`, `helper`, or `utils`.
 - Prefer standard ECMAScript, Web Platform, Svelte, SvelteKit, and CSS APIs over project-specific wrappers.
-- Do not extract a one-use helper unless it creates a real boundary, names a domain invariant, or materially reduces complexity.
+- Do not extract a one-use general helper unless it creates a real boundary, names a domain invariant, or materially reduces complexity. A named domain primitive is justified even with one use when it makes a domain contract, dependency, or permitted result explicit.
 - Avoid unrelated renaming, formatting, file movement, or refactoring.
 - Preserve public contracts unless the task explicitly changes them.
 - Separate verified implementation from target architecture in code comments and documentation.

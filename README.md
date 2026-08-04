@@ -1,6 +1,6 @@
 # Hyperkernel
 
-Hyperkernel is building a self-hostable platform for connected applications that developers can inspect, trust, and operate themselves. It is designed to provide shared primitives for identity, data, permissions, and app-to-app communication, so independently developed applications can work together without giving up reliability, auditability, or control.
+Hyperkernel is building a self-hostable platform for connected applications that independent developers and small organizations can inspect, trust, and operate themselves. It is designed to provide shared primitives for identity, data, permissions, and app-to-app communication, so independently developed applications can work together without giving up reliability, auditability, or control.
 
 > [!NOTE]
 > Hyperkernel is currently in the design phase. The repository contains an early SvelteKit shell and a centralized SQLite connection, but almost none of the platform described here is implemented; the first version is under active development. Until that version is stable, this document describes the intended architecture. It will then be revised to reflect the implemented system.
@@ -19,6 +19,62 @@ Most product code does not need the same review cost as the foundation that prot
 Hyperkernel's architecture concentrates the highest assurance in a small core. That core provides the durable rules; everything above it can iterate at a speed appropriate to its risk. The goal is to make AI-assisted development practical without asking users to trust unreviewed code with unrestricted access to authoritative state.
 
 Reliability, auditability, self-hosting, developer experience, and user experience are all platform requirements. None is treated as optional polish.
+
+## Explicit domain contracts
+
+Hyperkernel remains an event-sourced platform at its core. Commands record
+intent, accepted immutable events record durable facts, and projections remain
+derived state. The audit history records consequential command decisions and
+resulting facts, as well as declared and delivered external work where
+applicable. It does not justify recording secrets, transient presentation
+state, or unnecessary private context.
+
+An additional primary goal is to make domain behavior explicit. Hyperkernel
+provides constrained application and infrastructure primitives from which an
+application defines named domain concepts and composes functionality. A domain
+concept that authorizes, rejects, reads decision data, turns accepted intent
+into a fact, or requests external work must have an explicit primitive contract;
+it must not be hidden in an unregistered helper or arbitrary orchestration
+branch.
+
+This deliberately makes application definitions more verbose. The cost is
+accepted when it turns an implicit business choice into an inspectable,
+composable contract. AI makes generating those declarations cheaper; it does
+not make generated code trustworthy. Hyperkernel's value is to provide the
+boundaries and constraints that make AI- and developer-authored behavior
+reviewable instead of granting it unrestricted access to authoritative state.
+
+Each primitive has one responsibility. A feature may therefore require several
+small contracts for its authorization, decision data, rule, fact mapping, and
+declared external work. This is intentional: composition of focused contracts
+is preferable to one broad primitive that hides several domain decisions.
+
+Hyperkernel does not attempt to reduce implementation detail or total system
+complexity to zero. It aims to reduce and isolate application and infrastructure
+detail as far as practical, so developers and AI agents can spend most of their
+attention on domain semantics and business rules. A practical measure of
+success is that building a representative application primarily involves
+composing and reviewing its domain language rather than repeatedly rebuilding
+authorization, persistence, audit, dependency, and delivery machinery.
+
+The complexity inherent in a domain remains. Building a maintainable
+application still requires modeling the system accurately and deliberately
+reducing, naming, and composing its domain concepts so that they remain
+manageable as the application evolves. Hyperkernel separates those concerns
+from recurring application and infrastructure complexity; it does not make the
+domain problem disappear.
+
+Primitive factories and their callbacks are side-effect free. They receive only
+declared, immutable inputs and synchronously return validated values or
+descriptors. A primitive may declare external business work, but it never
+performs it: the kernel owns scheduling, delivery, auditing, retry, and
+reconciliation through a separate effect contract.
+
+These explicit-domain-contract invariants are canonical here and in
+`AGENTS.md`. Design record
+[`0010: Explicit domain primitives`](docs/design/0010-explicit-domain-primitives.md)
+explains their rationale and limits; if a record conflicts with this document
+or `AGENTS.md`, the canonical documents prevail.
 
 ## Core architecture
 
